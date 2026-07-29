@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>자동차 부품 백과사전 · Automotive Parts Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;600;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#071A2B;
+  --plate:#0C2740;
+  --plate-2:#123551;
+  --line:#2E5A7D;
+  --line-soft:rgba(230,238,244,.10);
+  --chalk:#E6EEF4;
+  --chalk-2:#93AEC4;
+  --chalk-3:#61829B;
+  --signal:#F2C230;
+  --wear:#E2624A;
+  --disp:'Big Shoulders Display',Impact,sans-serif;
+  --sans:'IBM Plex Sans KR',system-ui,sans-serif;
+  --mono:'IBM Plex Mono','IBM Plex Sans KR',monospace;
+  --maxw:1180px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background-color:var(--ink);
+  background-image:
+    linear-gradient(var(--line-soft) 1px,transparent 1px),
+    linear-gradient(90deg,var(--line-soft) 1px,transparent 1px),
+    linear-gradient(rgba(230,238,244,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(230,238,244,.035) 1px,transparent 1px);
+  background-size:120px 120px,120px 120px,24px 24px,24px 24px;
+  color:var(--chalk);
+  font-family:var(--sans);
+  font-weight:300;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
+.skip{position:absolute;left:-9999px}
+.skip:focus{left:16px;top:16px;z-index:99;background:var(--signal);color:var(--ink);padding:10px 16px;font-family:var(--mono)}
+
+/* ---------- 도면 표제란 ---------- */
+.plate{border-bottom:1px solid var(--line);padding-top:28px}
+.plate__stamp{
+  display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--chalk-3);border-bottom:1px solid var(--line);padding-bottom:10px;
+}
+.plate__title{display:grid;grid-template-columns:1fr;gap:6px;padding:44px 0 8px}
+.plate__title h1{
+  margin:0;font-family:var(--sans);font-weight:700;
+  font-size:clamp(30px,5.4vw,54px);line-height:1.1;letter-spacing:-.02em;
+}
+.plate__latin{
+  font-family:var(--disp);font-weight:800;
+  font-size:clamp(46px,10.5vw,116px);line-height:.82;letter-spacing:.005em;
+  color:transparent;-webkit-text-stroke:1.5px var(--line);
+  text-transform:uppercase;margin:0 0 4px;
+}
+.lede{max-width:56ch;color:var(--chalk-2);font-size:16px;margin:14px 0 0}
+.lede b{color:var(--chalk);font-weight:500}
+
+/* ---------- 단면도 ---------- */
+.schematic{margin:34px 0 0;padding:0 0 20px}
+.schematic__cap{
+  font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--chalk-3);display:flex;gap:14px;align-items:center;margin-bottom:6px;
+}
+.schematic__cap span{flex:1;height:1px;background:var(--line)}
+.schematic svg{width:100%;height:auto;display:block;overflow:visible}
+.dwg-body{fill:rgba(46,90,125,.14);stroke:var(--chalk);stroke-width:2;stroke-linejoin:round}
+.dwg-line{fill:none;stroke:var(--chalk-2);stroke-width:1.4}
+.dwg-glass{fill:rgba(46,90,125,.28);stroke:var(--chalk-2);stroke-width:1.4}
+.dwg-tire{fill:var(--ink);stroke:var(--chalk);stroke-width:2}
+.dwg-rim{fill:none;stroke:var(--chalk-2);stroke-width:1.4}
+.dwg-ground{stroke:var(--line);stroke-width:1.4}
+.dwg-dim{stroke:var(--chalk-3);stroke-width:1;stroke-dasharray:5 4}
+.dwg-dimtext{fill:var(--chalk-3);font-family:var(--mono);font-size:12px;letter-spacing:.12em}
+
+.pin{cursor:pointer}
+.pin .lead{stroke:var(--chalk-3);stroke-width:1.2;fill:none;stroke-dasharray:3 3}
+.pin .dot{fill:var(--signal)}
+.pin .badge{fill:var(--ink);stroke:var(--chalk-2);stroke-width:1.4}
+.pin .num{fill:var(--chalk);font-family:var(--mono);font-size:14px;font-weight:500;text-anchor:middle}
+.pin .lbl{fill:var(--chalk-2);font-family:var(--sans);font-weight:500;font-size:14px;text-anchor:middle}
+.pin:hover .badge,.pin:focus-visible .badge,.pin.is-on .badge{fill:var(--signal);stroke:var(--signal)}
+.pin:hover .num,.pin:focus-visible .num,.pin.is-on .num{fill:var(--ink);font-weight:500}
+.pin:hover .lbl,.pin:focus-visible .lbl,.pin.is-on .lbl{fill:var(--chalk)}
+.pin:hover .lead,.pin:focus-visible .lead,.pin.is-on .lead{stroke:var(--signal);stroke-dasharray:none}
+.pin .badge,.pin .num,.pin .lbl,.pin .lead{transition:all .18s ease}
+
+/* ---------- 도구막대 ---------- */
+.bar{
+  position:sticky;top:0;z-index:20;
+  background:rgba(7,26,43,.92);backdrop-filter:blur(10px);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+}
+.bar__in{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:14px 24px;max-width:var(--maxw);margin:0 auto}
+.field{position:relative;flex:1;min-width:230px}
+.field input{
+  width:100%;background:var(--plate);border:1px solid var(--line);color:var(--chalk);
+  font-family:var(--sans);font-size:15px;font-weight:400;padding:11px 14px 11px 40px;border-radius:2px;
+}
+.field input::placeholder{color:var(--chalk-3)}
+.field svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:16px;height:16px;stroke:var(--chalk-3);fill:none;stroke-width:1.8}
+.count{font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:var(--chalk-3);white-space:nowrap}
+.count b{color:var(--signal);font-weight:500}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:0 24px 14px;max-width:var(--maxw);margin:0 auto;scrollbar-width:thin}
+.chip{
+  flex:0 0 auto;background:none;border:1px solid var(--line);color:var(--chalk-2);
+  font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  padding:7px 13px;border-radius:2px;cursor:pointer;transition:.15s;
+}
+.chip:hover{border-color:var(--chalk-2);color:var(--chalk)}
+.chip.is-on{background:var(--signal);border-color:var(--signal);color:var(--ink);font-weight:500}
+
+/* ---------- 계통 섹션 ---------- */
+.sys{padding:52px 0 6px;border-top:1px solid rgba(46,90,125,.4)}
+.sys:first-child{border-top:none}
+.sys__head{display:flex;gap:20px;align-items:flex-start;margin-bottom:26px}
+.sys__no{
+  font-family:var(--disp);font-weight:800;font-size:68px;line-height:.78;
+  color:transparent;-webkit-text-stroke:1.4px var(--line);flex:0 0 auto;
+}
+.sys__txt h2{margin:0;font-size:23px;font-weight:600;letter-spacing:-.01em}
+.sys__txt h2 em{font-family:var(--mono);font-style:normal;font-size:12px;letter-spacing:.2em;color:var(--chalk-3);margin-left:10px}
+.sys__txt p{margin:4px 0 0;color:var(--chalk-2);font-size:14.5px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:14px}
+
+.card{
+  text-align:left;background:var(--plate);border:1px solid var(--line);border-radius:2px;
+  padding:16px 16px 14px;color:inherit;font:inherit;cursor:pointer;
+  display:flex;flex-direction:column;gap:7px;transition:.16s;position:relative;overflow:hidden;
+}
+.card::after{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--signal);transform:scaleY(0);transform-origin:top;transition:transform .2s ease}
+.card:hover{background:var(--plate-2);border-color:var(--chalk-3);transform:translateY(-2px)}
+.card:hover::after{transform:scaleY(1)}
+.card__code{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;color:var(--signal)}
+.card__ko{font-size:17px;font-weight:600;line-height:1.3}
+.card__en{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--chalk-3);margin-top:-4px}
+.card__sum{font-size:13.5px;color:var(--chalk-2);line-height:1.55}
+body.easy-on .card__sum{color:var(--chalk)}
+
+/* 초보자 모드 스위치 */
+.toggle{
+  display:inline-flex;align-items:center;gap:9px;white-space:nowrap;
+  background:none;border:1px solid var(--line);color:var(--chalk-2);
+  font-family:var(--sans);font-size:13.5px;font-weight:400;padding:9px 14px;border-radius:2px;cursor:pointer;
+}
+.toggle:hover{border-color:var(--chalk-2);color:var(--chalk)}
+.toggle .sw{width:30px;height:16px;border:1px solid var(--chalk-3);border-radius:9px;position:relative;flex:0 0 auto}
+.toggle .sw::after{content:"";position:absolute;top:2px;left:2px;width:10px;height:10px;border-radius:50%;background:var(--chalk-3);transition:.18s}
+.toggle[aria-pressed="true"]{border-color:var(--signal);color:var(--signal)}
+.toggle[aria-pressed="true"] .sw{border-color:var(--signal)}
+.toggle[aria-pressed="true"] .sw::after{left:16px;background:var(--signal)}
+
+/* 쉬운 설명 블록 */
+.easy{
+  border-left:3px solid var(--signal);background:rgba(242,194,48,.08);
+  padding:15px 17px;margin:0 0 24px;border-radius:0 2px 2px 0;
+}
+.easy h4{
+  margin:0 0 7px;font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;
+  color:var(--signal);text-transform:uppercase;font-weight:500;
+}
+.easy p{margin:0;font-size:15.5px;line-height:1.8;color:var(--chalk);font-weight:400}
+.deep-label{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;color:var(--chalk-3);
+  text-transform:uppercase;margin:0 0 8px;
+}
+
+.empty{padding:70px 0 90px;text-align:center;color:var(--chalk-2)}
+.empty strong{display:block;font-size:19px;color:var(--chalk);font-weight:600;margin-bottom:6px}
+.empty button{margin-top:16px;background:var(--signal);border:none;color:var(--ink);font-family:var(--mono);font-size:12px;letter-spacing:.14em;padding:10px 18px;cursor:pointer;border-radius:2px}
+
+/* ---------- 상세 서랍 ---------- */
+.scrim{position:fixed;inset:0;background:rgba(3,12,20,.72);opacity:0;pointer-events:none;transition:opacity .22s;z-index:40}
+.scrim.is-on{opacity:1;pointer-events:auto}
+.drawer{
+  position:fixed;top:0;right:0;bottom:0;width:min(490px,100%);z-index:50;
+  background:var(--plate);border-left:1px solid var(--line);
+  transform:translateX(101%);transition:transform .28s cubic-bezier(.4,0,.2,1);
+  overflow-y:auto;padding:26px 28px 60px;
+}
+.drawer.is-on{transform:none}
+.drawer__top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:22px}
+.drawer__code{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--signal)}
+.drawer__sys{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--chalk-3);display:block;margin-top:5px}
+.drawer__close{background:none;border:1px solid var(--line);color:var(--chalk-2);width:34px;height:34px;flex:0 0 auto;cursor:pointer;border-radius:2px;font-size:17px;line-height:1}
+.drawer__close:hover{border-color:var(--wear);color:var(--wear)}
+.drawer h3{margin:0;font-size:27px;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.drawer .en{font-family:var(--mono);font-size:12.5px;color:var(--chalk-3);letter-spacing:.05em;margin:6px 0 18px}
+.drawer .role{font-size:15px;color:var(--chalk);line-height:1.75;margin:0 0 24px}
+.spec{border-top:1px solid var(--line);padding:13px 0;display:grid;grid-template-columns:82px 1fr;gap:14px;align-items:start}
+.spec dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--chalk-3);text-transform:uppercase;padding-top:3px}
+.spec dd{margin:0;font-size:14.5px;color:var(--chalk-2);line-height:1.6}
+.syms{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.syms li{font-size:14px;color:var(--chalk-2);padding-left:17px;position:relative;line-height:1.55}
+.syms li::before{content:"";position:absolute;left:0;top:8px;width:7px;height:7px;border:1.5px solid var(--wear);transform:rotate(45deg)}
+
+footer{border-top:1px solid var(--line);margin-top:60px;padding:26px 0 60px}
+footer p{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--chalk-3);margin:0;text-transform:uppercase}
+footer .note{font-family:var(--sans);text-transform:none;letter-spacing:0;font-size:13px;margin-top:10px;max-width:60ch;line-height:1.6}
+
+@media (max-width:720px){
+  .wrap,.bar__in,.chips{padding-left:18px;padding-right:18px}
+  .sys__head{gap:14px}
+  .sys__no{font-size:46px}
+  .drawer{width:100%;top:auto;height:88vh;border-left:none;border-top:1px solid var(--line);transform:translateY(101%);border-radius:4px 4px 0 0}
+  .drawer.is-on{transform:none}
+  .grid{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#catalog">부품 목록으로 건너뛰기</a>
+
+<div class="wrap">
+<header class="plate">
+  <div class="plate__stamp">
+    <span>Doc. AP-2026 / Rev.1</span>
+    <span>계통 10 · 항목 <b id="stampCount">—</b></span>
+    <span>Scale — N.T.S.</span>
+  </div>
+  <div class="plate__title">
+    <p class="plate__latin">Automotive<br>Parts Atlas</p>
+    <h1>자동차 부품 백과사전</h1>
+  </div>
+  <p class="lede">엔진에서 휠까지, 자동차를 이루는 부품을 <b>10개 계통</b>으로 나눠 정리했습니다. 부품마다 <b>비유로 푼 쉬운 설명</b>을 먼저 두고, 그 아래에 하는 일과 달린 위치, 교체 주기, 고장 신호를 담았습니다. 자동차를 처음 보는 분은 아래 <b>쉬운 설명으로 보기</b>를 켜고 둘러보세요.</p>
+
+  <figure class="schematic">
+    <figcaption class="schematic__cap">Fig. 1 — 계통 배치도<span></span>번호를 누르면 해당 계통만 보기</figcaption>
+    <svg viewBox="0 0 1000 520" role="img" aria-label="자동차 측면 단면도와 10개 계통 표시">
+      <!-- 지면 -->
+      <line class="dwg-ground" x1="50" y1="420" x2="950" y2="420"/>
+      <g class="dwg-ground" opacity=".55">
+        <line x1="60" y1="420" x2="48" y2="432"/><line x1="110" y1="420" x2="98" y2="432"/>
+        <line x1="160" y1="420" x2="148" y2="432"/><line x1="210" y1="420" x2="198" y2="432"/>
+        <line x1="260" y1="420" x2="248" y2="432"/><line x1="310" y1="420" x2="298" y2="432"/>
+        <line x1="360" y1="420" x2="348" y2="432"/><line x1="410" y1="420" x2="398" y2="432"/>
+        <line x1="460" y1="420" x2="448" y2="432"/><line x1="510" y1="420" x2="498" y2="432"/>
+        <line x1="560" y1="420" x2="548" y2="432"/><line x1="610" y1="420" x2="598" y2="432"/>
+        <line x1="660" y1="420" x2="648" y2="432"/><line x1="710" y1="420" x2="698" y2="432"/>
+        <line x1="760" y1="420" x2="748" y2="432"/><line x1="810" y1="420" x2="798" y2="432"/>
+        <line x1="860" y1="420" x2="848" y2="432"/><line x1="910" y1="420" x2="898" y2="432"/>
+      </g>
+
+      <!-- 차체 -->
+      <path class="dwg-body" d="M104 322 L104 282 C106 266 118 258 134 255 L214 246 L352 234 L424 168 L616 162 L706 230 L878 240 C896 242 902 250 902 262 L902 322 Z"/>
+      <path class="dwg-glass" d="M366 232 L432 176 L512 173 L512 232 Z"/>
+      <path class="dwg-glass" d="M528 173 L610 170 L694 228 L528 230 Z"/>
+      <path class="dwg-line" d="M520 232 L520 322"/>
+      <path class="dwg-line" d="M352 234 L352 246"/>
+      <rect class="dwg-line" x="556" y="250" width="34" height="8" rx="4"/>
+      <path class="dwg-line" d="M217 322 A66 66 0 0 1 327 322"/>
+      <path class="dwg-line" d="M687 322 A66 66 0 0 1 797 322"/>
+
+      <!-- 휠 -->
+      <g>
+        <circle class="dwg-tire" cx="272" cy="358" r="62"/>
+        <circle class="dwg-rim" cx="272" cy="358" r="38"/>
+        <circle class="dwg-rim" cx="272" cy="358" r="9"/>
+        <g class="dwg-rim">
+          <line x1="272" y1="349" x2="272" y2="322"/>
+          <line x1="272" y1="349" x2="272" y2="322" transform="rotate(72 272 358)"/>
+          <line x1="272" y1="349" x2="272" y2="322" transform="rotate(144 272 358)"/>
+          <line x1="272" y1="349" x2="272" y2="322" transform="rotate(216 272 358)"/>
+          <line x1="272" y1="349" x2="272" y2="322" transform="rotate(288 272 358)"/>
+        </g>
+        <circle class="dwg-tire" cx="742" cy="358" r="62"/>
+        <circle class="dwg-rim" cx="742" cy="358" r="38"/>
+        <circle class="dwg-rim" cx="742" cy="358" r="9"/>
+        <g class="dwg-rim">
+          <line x1="742" y1="349" x2="742" y2="322"/>
+          <line x1="742" y1="349" x2="742" y2="322" transform="rotate(72 742 358)"/>
+          <line x1="742" y1="349" x2="742" y2="322" transform="rotate(144 742 358)"/>
+          <line x1="742" y1="349" x2="742" y2="322" transform="rotate(216 742 358)"/>
+          <line x1="742" y1="349" x2="742" y2="322" transform="rotate(288 742 358)"/>
+        </g>
+      </g>
+
+      <!-- 축간거리 치수선 -->
+      <g>
+        <line class="dwg-dim" x1="272" y1="358" x2="272" y2="446"/>
+        <line class="dwg-dim" x1="742" y1="358" x2="742" y2="446"/>
+        <line class="dwg-dim" x1="272" y1="440" x2="742" y2="440" stroke-dasharray="none"/>
+        <text class="dwg-dimtext" x="507" y="434" text-anchor="middle">WHEELBASE</text>
+      </g>
+
+      <!-- 계통 핀 -->
+      <g id="pins"></g>
+    </svg>
+  </figure>
+</header>
+</div>
+
+<nav class="bar" aria-label="부품 검색 및 계통 필터">
+  <div class="bar__in">
+    <div class="field">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16" y1="16" x2="21" y2="21"/></svg>
+      <input id="q" type="search" placeholder="부품 이름, 영문명, 증상으로 찾기 — 예: 타이밍벨트, 떨림" autocomplete="off">
+    </div>
+    <button class="toggle" id="easyBtn" aria-pressed="false"><span class="sw" aria-hidden="true"></span>쉬운 설명으로 보기</button>
+    <p class="count"><b id="n">0</b> 개 항목</p>
+  </div>
+  <div class="chips" id="chips"></div>
+</nav>
+
+<div class="wrap">
+  <main id="catalog"></main>
+  <footer>
+    <p>Automotive Parts Atlas · 계통별 분해 색인</p>
+    <p class="note">교체 주기와 증상은 일반 승용차 기준의 참고값입니다. 차종·주행 환경에 따라 달라지므로 실제 정비는 차량 취급설명서와 정비 지침서를 따르세요.</p>
+  </footer>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dTitle" tabindex="-1"></aside>
+
+<script>
+const SYSTEMS=[
+{id:"engine",no:"01",ko:"엔진",en:"ENGINE",desc:"연료를 태워 회전력을 만드는 동력원",pin:{bx:250,by:66,ax:200,ay:272}},
+{id:"drive",no:"02",ko:"동력전달",en:"DRIVETRAIN",desc:"엔진의 힘을 바퀴까지 옮기고 비율을 바꾼다",pin:{bx:380,by:476,ax:400,ay:318}},
+{id:"brake",no:"03",ko:"제동",en:"BRAKE",desc:"운동에너지를 열로 바꿔 차를 세운다",pin:{bx:190,by:476,ax:250,ay:394}},
+{id:"susp",no:"04",ko:"서스펜션",en:"SUSPENSION",desc:"노면 충격을 흡수하고 타이어를 지면에 붙인다",pin:{bx:730,by:476,ax:700,ay:334}},
+{id:"steer",no:"05",ko:"조향",en:"STEERING",desc:"운전자의 조작을 앞바퀴 각도로 바꾼다",pin:{bx:392,by:66,ax:398,ay:240}},
+{id:"fuel",no:"06",ko:"연료·흡배기",en:"FUEL & EXHAUST",desc:"연료와 공기를 넣고 배기가스를 내보낸다",pin:{bx:558,by:476,ax:600,ay:322}},
+{id:"cool",no:"07",ko:"냉각·공조",en:"COOLING & HVAC",desc:"엔진 열을 식히고 실내 온도를 맞춘다",pin:{bx:106,by:66,ax:126,ay:266}},
+{id:"elec",no:"08",ko:"전장·전자",en:"ELECTRICAL",desc:"전기를 만들고 저장하고 제어한다",pin:{bx:530,by:66,ax:500,ay:210}},
+{id:"body",no:"09",ko:"차체·외장",en:"BODY",desc:"부품을 얹는 골격이자 충돌 시 승객을 지키는 구조",pin:{bx:686,by:66,ax:566,ay:166}},
+{id:"wheel",no:"10",ko:"휠·타이어",en:"WHEEL & TIRE",desc:"차와 노면이 닿는 유일한 접점",pin:{bx:882,by:476,ax:790,ay:396}}
+];
+
+const PARTS=[
+/* ── 01 엔진 ── */
+{s:"engine",c:"E-01",ko:"실린더 블록",en:"Cylinder Block",sum:"엔진의 뼈대. 실린더 구멍과 냉각수 통로가 뚫린 큰 주물 덩어리.",
+ easy:"엔진이라는 건물의 콘크리트 골조입니다. 여기에 구멍을 뚫어 피스톤을 넣고, 물길을 파서 열을 식힙니다.",
+ role:"피스톤이 오르내리는 실린더, 냉각수가 도는 워터 재킷, 크랭크샤프트를 받치는 저널이 하나의 주물에 통합돼 있습니다. 예전엔 주철이 표준이었지만 경량화를 위해 알루미늄 합금에 실린더 라이너를 끼우는 방식이 널리 쓰입니다.",
+ loc:"엔진 하단 중심부. 위로 실린더 헤드, 아래로 오일 팬이 붙습니다.",life:"반영구 — 정상 조건에서는 차량 수명과 같이 갑니다.",
+ sym:["냉각수가 줄어드는데 새는 곳이 안 보임 (내부 크랙)","배기구에서 흰 연기가 지속적으로 남","엔진오일에 커피우유색 유화 현상"]},
+{s:"engine",c:"E-02",ko:"실린더 헤드",en:"Cylinder Head",sum:"연소실 천장. 흡배기 밸브와 캠샤프트, 점화 플러그가 모여 있다.",
+ easy:"블록이 냄비라면 헤드는 뚜껑입니다. 그냥 뚜껑이 아니라 공기가 드나드는 문과 그 문을 여닫는 장치가 통째로 달려 있는 뚜껑이죠.",
+ role:"블록 위에 얹혀 연소실의 윗면을 만들고, 흡배기 포트와 밸브 기구를 품습니다. 헤드의 흡배기 포트 형상이 엔진 출력 특성을 크게 좌우해서 튜닝에서 가장 먼저 손대는 부위이기도 합니다.",
+ loc:"실린더 블록 바로 위. 사이에 헤드 개스킷이 들어갑니다.",life:"반영구 — 단, 과열 이력이 있으면 변형(휨) 점검 필요.",
+ sym:["출력 저하와 함께 실화(미스파이어)","냉각수 리저버에서 기포가 계속 올라옴","오버히트 후 압축 불량"]},
+{s:"engine",c:"E-03",ko:"피스톤·피스톤 링",en:"Piston & Rings",sum:"연소 폭발압을 받아 위아래로 움직이는 부품과, 그 틈을 막는 링.",
+ easy:"주사기 손잡이를 떠올려 보세요. 폭발하는 힘에 밀려 아래로 쭉 내려가는 게 피스톤이고, 링은 그 틈으로 새지 않게 감아둔 고무 패킹입니다.",
+ role:"피스톤은 폭발 압력을 직선 운동으로 받아내고, 3개 안팎의 링이 연소실 기밀 유지와 실린더 벽 오일 긁어내리기를 담당합니다. 링이 닳으면 오일이 연소실로 올라가 타면서 오일 소모가 급증합니다.",
+ loc:"실린더 내부. 커넥팅 로드로 크랭크샤프트와 연결됩니다.",life:"20만 km 이상 — 링은 오일 관리 상태에 크게 좌우됩니다.",
+ sym:["엔진오일이 눈에 띄게 빨리 줄어듦","가속 시 푸른빛 도는 흰 연기","압축압력 저하로 시동 불량"]},
+{s:"engine",c:"E-04",ko:"커넥팅 로드",en:"Connecting Rod",sum:"피스톤의 직선 운동을 크랭크샤프트로 전달하는 연결봉.",
+ easy:"자전거 페달과 무릎 사이의 정강이입니다. 위아래로 밟는 움직임을 빙글빙글 도는 움직임으로 바꿔주는 다리.",
+ role:"위쪽은 피스톤 핀, 아래쪽은 크랭크 핀에 물려 왕복 운동을 회전 운동으로 바꾸는 중간 다리 역할을 합니다. 엔진에서 가장 큰 인장·압축 응력을 반복해서 받는 부품 중 하나입니다.",
+ loc:"피스톤과 크랭크샤프트 사이.",life:"반영구 — 파손 시 대개 엔진 전체 손상으로 이어집니다.",
+ sym:["부하 시 규칙적인 '똑똑' 타격음 (로드 노크)","심하면 블록 측면 관통 파손"]},
+{s:"engine",c:"E-05",ko:"크랭크샤프트",en:"Crankshaft",sum:"엔진의 최종 출력축. 왕복 운동을 회전으로 바꿔 내보낸다.",
+ easy:"자전거 페달 축입니다. 위아래로 밟는 힘을 회전으로 모아서 바깥으로 내보냅니다.",
+ role:"여러 개의 크랭크 핀이 편심으로 배치돼 각 실린더의 힘을 순차적으로 받아 하나의 회전으로 합칩니다. 메인 베어링 위에 유막으로 떠 있는 구조여서 오일 압력이 떨어지면 순식간에 손상됩니다.",
+ loc:"실린더 블록 최하단, 오일 팬 바로 위.",life:"반영구 — 베어링(메탈)은 소모품.",
+ sym:["저회전에서 묵직한 '둥둥' 소음","오일 경고등 점등 후 소음 급증","크랭크각 센서 신호 이상으로 시동 불가"]},
+{s:"engine",c:"E-06",ko:"캠샤프트",en:"Camshaft",sum:"밸브를 정확한 타이밍에 열고 닫는 캠이 달린 축.",
+ easy:"달걀 모양 돌기가 줄줄이 달린 막대기입니다. 이게 돌면서 정해진 순서대로 문(밸브)을 하나씩 눌러 열어줍니다.",
+ role:"타원형 캠 돌기가 밸브를 밀어 여는 시점과 열림량(리프트)을 결정합니다. 요즘은 회전 위상을 바꾸는 가변 밸브 타이밍(CVVT/VVT-i)이 기본이라 저속 토크와 고속 출력을 동시에 잡습니다.",
+ loc:"DOHC 기준 실린더 헤드 상부에 2개(흡기·배기).",life:"반영구 — 타이밍 벨트/체인과 함께 관리.",
+ sym:["아이들 불안정과 출력 저하","VVT 계통 고장 코드 점등","냉간 시 헤드에서 '따다닥' 소음"]},
+{s:"engine",c:"E-07",ko:"밸브·밸브 스프링",en:"Valve & Spring",sum:"연소실 문. 공기를 들이고 배기가스를 내보낸다.",
+ easy:"엔진의 숨구멍 문입니다. 하나는 공기를 들이마시는 문, 하나는 내뱉는 문.",
+ role:"흡기 밸브는 혼합기(또는 공기)를, 배기 밸브는 연소 후 가스를 통과시킵니다. 배기 밸브는 800도가 넘는 가스에 노출돼 내열합금을 쓰고, 스프링은 고회전에서 밸브가 캠을 따라오게 강하게 눌러줍니다.",
+ loc:"실린더 헤드 내부, 연소실 천장.",life:"반영구 — 밸브 간극은 차종에 따라 10만 km 내외 점검.",
+ sym:["압축 누설로 인한 출력 저하","냉간 시 헤드 쪽 '딱딱' 타음 (간극 과다)","배기 밸브 손상 시 실화와 역화"]},
+{s:"engine",c:"E-08",ko:"타이밍 벨트·체인",en:"Timing Belt / Chain",sum:"크랭크샤프트와 캠샤프트를 같은 박자로 묶는 동기 장치.",
+ easy:"두 사람이 줄넘기를 돌릴 때 박자가 어긋나면 걸려 넘어지죠. 엔진 안 두 축의 박자를 묶어두는 줄입니다. 이게 끊기면 엔진 안에서 정면충돌이 납니다.",
+ role:"피스톤과 밸브가 부딪히지 않도록 두 축의 회전을 정확히 맞춰줍니다. 고무 벨트는 조용하지만 수명이 있고, 체인은 사실상 무교환이지만 텐셔너와 가이드가 마모되면 소음이 납니다.",
+ loc:"엔진 앞쪽 타이밍 커버 안.",life:"벨트 6~10만 km 교체 / 체인 무교환(텐셔너·가이드는 점검)",
+ sym:["엔진 앞쪽에서 '드르륵' 또는 체인 슬랩 소음","냉간 시동 직후 잠깐 나는 금속성 소음","벨트 절단 시 즉시 시동 정지 및 엔진 대파"]},
+{s:"engine",c:"E-09",ko:"오일 펌프·오일 팬",en:"Oil Pump & Pan",sum:"엔진오일을 끌어올려 구석구석 압송하는 심장과 저장고.",
+ easy:"엔진의 기름통과 그 기름을 퍼올리는 펌프입니다. 바닥에 고인 기름을 빨아올려 몸 구석구석에 돌립니다.",
+ role:"팬에 고인 오일을 스트레이너로 빨아들여 필터를 거쳐 각 베어링과 캠축으로 압송합니다. 유압이 곧 엔진 수명이라, 유압 경고등이 뜨면 즉시 정차하는 게 원칙입니다.",
+ loc:"엔진 최하단. 팬 바닥에 드레인 플러그가 있습니다.",life:"반영구 — 오일과 필터는 주행 조건에 따라 5천~1만 5천 km.",
+ sym:["시동 후 유압 경고등이 늦게 꺼짐","오일 팬 개스킷에서 배어나오는 누유","주차 자리에 검은 오일 자국"]},
+{s:"engine",c:"E-10",ko:"헤드 개스킷",en:"Head Gasket",sum:"블록과 헤드 사이를 막는 얇은 금속 밀봉재. 고장 나면 치명적.",
+ easy:"냄비와 뚜껑 사이에 끼우는 얇은 패킹입니다. 종잇장처럼 얇지만 이게 새면 엔진 전체가 망가집니다.",
+ role:"연소 압력, 냉각수, 엔진오일이라는 성질이 다른 세 가지를 동시에 한 장으로 막습니다. 과열로 헤드가 조금만 휘어도 밀봉이 깨지면서 냉각수와 오일이 서로 섞입니다.",
+ loc:"실린더 블록과 헤드 접합면.",life:"반영구 — 오버히트 이력이 최대 위험 요인.",
+ sym:["오일 캡 안쪽에 하얀 크림 같은 유화물","냉각수가 계속 줄고 배기에서 단내 나는 흰 연기","히터를 켜면 창에 기름진 김이 서림"]},
+{s:"engine",c:"E-11",ko:"엔진 마운트",en:"Engine Mount",sum:"엔진을 차체에 매달면서 진동을 걸러주는 고무·유체 받침.",
+ easy:"세탁기 밑에 깔아두는 진동 방지 고무 패드와 같습니다. 엔진의 부르르 떨림이 몸으로 전해지지 않게 걸러줍니다.",
+ role:"엔진의 무게를 받치는 동시에 폭발 진동이 차체로 전해지지 않게 절연합니다. 고급 차종은 내부에 유체나 전자 제어 밸브를 넣어 아이들과 주행 상황에 따라 강성을 바꿉니다.",
+ loc:"엔진 좌우와 후방, 보통 3~4개.",life:"10만 km 내외 — 고무 경화가 진행되면 교체.",
+ sym:["정차 D단에서 스티어링과 시트로 올라오는 진동","출발·정지 때 '쿵' 하는 충격음","공회전 시 엔진이 눈에 띄게 흔들림"]},
+{s:"engine",c:"E-12",ko:"플라이휠",en:"Flywheel",sum:"회전 관성을 저장해 엔진을 부드럽게 돌아가게 하는 원판.",
+ easy:"무거운 팽이입니다. 무겁게 돌고 있으면 힘이 잠깐 끊겨도 계속 돌죠. 엔진이 툭툭 끊기지 않고 매끄럽게 돌아가게 잡아줍니다.",
+ role:"폭발이 간헐적으로 일어나는 엔진의 회전 맥동을 관성으로 평탄하게 만듭니다. 가장자리 링 기어는 스타터 모터와 물리고, 수동변속기 차는 여기에 클러치 디스크가 붙습니다.",
+ loc:"엔진 뒤쪽 끝, 변속기와의 접합면.",life:"클러치 교환 시 함께 면 가공 또는 교체.",
+ sym:["듀얼매스 플라이휠 노후 시 아이들 '달그락' 소음","클러치 조작 시 진동","링 기어 손상 시 시동 걸 때 '끼익' 마찰음"]},
+
+/* ── 02 동력전달 ── */
+{s:"drive",c:"D-01",ko:"클러치",en:"Clutch",sum:"수동변속기에서 엔진과 변속기를 붙였다 뗐다 하는 마찰판.",
+ easy:"돌아가는 팽이를 손바닥으로 잡았다 놨다 하는 것과 같습니다. 엔진의 힘을 바퀴에 붙였다 뗐다 하는 손바닥입니다.",
+ role:"페달을 밟으면 압력판이 디스크를 놓아 동력이 끊기고, 떼면 마찰력으로 다시 이어집니다. 반클러치 사용이 많을수록 디스크 라이닝이 빠르게 닳습니다.",
+ loc:"엔진 플라이휠과 변속기 입력축 사이.",life:"운전 습관에 따라 8~15만 km.",
+ sym:["회전수는 오르는데 속도가 안 붙는 슬립","클러치를 밟을 때 무겁거나 '삐걱' 소음","반클러치 구간이 페달 맨 위로 올라옴"]},
+{s:"drive",c:"D-02",ko:"수동변속기",en:"Manual Transmission",sum:"기어를 직접 물려 회전수와 토크 비율을 바꾸는 장치.",
+ easy:"자전거 기어와 똑같습니다. 언덕에선 가벼운 기어, 평지에선 무거운 기어. 그걸 손으로 직접 고르는 방식입니다.",
+ role:"여러 쌍의 기어와 싱크로나이저로 구성돼, 운전자가 선택한 단수에 맞게 회전을 감속하고 토크를 키웁니다. 구조가 단순해 효율이 높고 고장이 적습니다.",
+ loc:"엔진 바로 뒤(FR) 또는 옆(FF).",life:"오일 6~10만 km 교체, 본체는 반영구.",
+ sym:["특정 단에서 기어가 잘 안 들어감 (싱크로 마모)","주행 중 기어가 빠짐","변속기 케이스에서 웅웅거리는 베어링 소음"]},
+{s:"drive",c:"D-03",ko:"자동변속기",en:"Automatic Transmission",sum:"유성기어와 유압 클러치로 스스로 단수를 바꾸는 변속기.",
+ easy:"자전거 기어를 사람 대신 알아서 바꿔주는 장치입니다. 지금 속도와 밟은 정도를 보고 스스로 판단합니다.",
+ role:"토크 컨버터로 동력을 받아 여러 조합의 유성기어를 유압 클러치로 잠그며 변속합니다. 밸브 바디의 솔레노이드를 TCU가 제어해 변속 시점과 충격을 조절합니다.",
+ loc:"엔진 바로 뒤. 별도 오일 쿨러가 붙기도 합니다.",life:"ATF 6~10만 km(가혹 조건 시 단축).",
+ sym:["변속 충격이 커지거나 늦게 변속됨","가속 시 회전수만 치솟는 슬립","후진이 늦게 체결됨"]},
+{s:"drive",c:"D-04",ko:"토크 컨버터",en:"Torque Converter",sum:"오일의 흐름으로 동력을 전달하는 유체 클러치. 자동변속기의 입구.",
+ easy:"선풍기 두 대를 마주 보게 두고 한 대를 켜면 다른 한 대가 따라 돕니다. 서로 닿지 않고 바람으로 힘을 전하는 셈이라 출발이 부드럽습니다.",
+ role:"임펠러가 오일을 밀고 터빈이 받아 도는 방식이라 충격 없이 부드럽게 출발할 수 있고, 저속에서 토크를 증폭해줍니다. 고속에서는 락업 클러치로 직결해 손실을 줄입니다.",
+ loc:"엔진과 자동변속기 사이.",life:"변속기 오일 관리에 좌우, 통상 반영구.",
+ sym:["저속 주행 시 몸이 울렁이는 진동(락업 슈더링)","정차 시 차가 앞으로 밀리는 힘이 약해짐","ATF에서 탄 냄새"]},
+{s:"drive",c:"D-05",ko:"DCT (듀얼 클러치)",en:"Dual Clutch Transmission",sum:"홀수·짝수 기어를 두 개의 클러치가 나눠 맡아 빠르게 변속.",
+ easy:"다음에 쓸 기어를 미리 손에 쥐고 있다가 순식간에 바꿔 끼웁니다. 그래서 변속이 눈에 띄게 빠릅니다.",
+ role:"다음 단을 미리 물려두고 클러치만 바꿔 물어 변속 시간이 매우 짧습니다. 건식은 효율이 좋지만 저속 정체 구간에서 열에 취약하고, 습식은 내구성이 좋은 대신 조금 무겁습니다.",
+ loc:"엔진 뒤.",life:"습식 오일 6만 km 내외, 클러치는 소모품.",
+ sym:["저속 정체 구간에서 울컥거림","경사로 출발 시 클러치 과열 경고","1~2단 변속 시 충격"]},
+{s:"drive",c:"D-06",ko:"CVT (무단변속기)",en:"Continuously Variable Transmission",sum:"두 풀리의 지름을 바꿔가며 단수 없이 연속으로 변속.",
+ easy:"기어 단수가 아예 없습니다. 톱니 사이를 체인이 미끄러지듯 계속 옮겨 다니는 느낌이라 변속 충격이 없는 대신, 가속할 때 소리가 붕 뜬 느낌이 납니다.",
+ role:"금속 벨트나 체인이 원뿔형 풀리 사이를 오가며 변속비를 무단계로 바꿉니다. 엔진을 항상 효율이 좋은 회전수에 붙잡아 둘 수 있어 연비에 유리합니다.",
+ loc:"엔진 뒤. 전용 CVT 오일을 씁니다.",life:"전용 오일 4~8만 km — 일반 ATF 사용 금지.",
+ sym:["가속 시 회전수가 붙박이처럼 고정되는 고무줄 느낌","벨트 미끄러짐으로 인한 가속 불량","'웅~' 하는 금속 소음"]},
+{s:"drive",c:"D-07",ko:"드라이브 샤프트·등속 조인트",en:"Drive Shaft / CV Joint",sum:"변속기의 힘을 바퀴로 보내는 축. 꺾여도 회전 속도가 일정하다.",
+ easy:"바퀴까지 힘을 나르는 막대기입니다. 바퀴는 위아래로 튀고 좌우로 꺾이니까, 꺾인 상태에서도 힘이 전해지도록 관절을 달아 두었습니다.",
+ role:"서스펜션이 위아래로 움직이고 앞바퀴가 좌우로 꺾여도 회전이 매끄럽게 전달돼야 하므로 등속(CV) 조인트를 씁니다. 조인트는 그리스와 고무 부트로 보호됩니다.",
+ loc:"변속기 출력부에서 좌우 휠 허브까지.",life:"반영구 — 부트가 찢어지면 조인트 수명이 급격히 짧아집니다.",
+ sym:["핸들을 끝까지 꺾고 출발할 때 '드드득' 소리","부트 주변에 그리스가 튄 자국","가속 시 차체 진동"]},
+{s:"drive",c:"D-08",ko:"차동 기어",en:"Differential",sum:"좌우 바퀴가 다른 속도로 돌 수 있게 회전을 나눠주는 기어.",
+ easy:"코너를 돌 때 바깥쪽 바퀴가 안쪽보다 더 멀리 갑니다. 두 바퀴가 각자 다른 속도로 돌 수 있게 힘을 나눠주는 장치입니다.",
+ role:"코너를 돌 때 바깥 바퀴가 더 많이 돌아야 하므로 회전 차이를 흡수합니다. 한쪽 바퀴가 헛돌면 동력이 그쪽으로 다 빠지기 때문에, 이를 막는 LSD나 전자식 제어를 추가하기도 합니다.",
+ loc:"FF는 변속기 내부, FR·4WD는 차축 중앙.",life:"기어 오일 6~10만 km.",
+ sym:["선회 시 뒤쪽에서 '웅' 하는 소음","가감속 전환 시 '쿵' 하는 백래시 충격","디퍼렌셜 케이스 누유"]},
+{s:"drive",c:"D-09",ko:"프로펠러 샤프트",en:"Propeller Shaft",sum:"앞뒤로 길게 뻗어 후륜까지 동력을 보내는 회전축.",
+ easy:"앞에서 만든 힘을 뒷바퀴까지 나르는 긴 쇠막대입니다. 차 바닥 한가운데를 앞뒤로 관통합니다.",
+ role:"후륜구동·사륜구동 차에서 변속기와 뒤 차동기어를 잇습니다. 길이가 길어 유니버설 조인트와 중간 베어링으로 지지하며, 회전 밸런스가 조금만 틀어져도 진동이 납니다.",
+ loc:"차량 바닥 중앙 터널 안.",life:"조인트·센터 베어링 10만 km 내외 점검.",
+ sym:["특정 속도 구간에서 바닥이 떨리는 진동","출발 시 바닥에서 '쿵' 하는 유격 충격","고속에서 '웅웅' 공명음"]},
+{s:"drive",c:"D-10",ko:"트랜스퍼 케이스",en:"Transfer Case",sum:"사륜구동에서 앞뒤 축으로 동력을 나눠주는 분배기.",
+ easy:"힘을 앞바퀴와 뒷바퀴로 나눠주는 분배기입니다. 네 바퀴 굴림 차에만 있습니다.",
+ role:"변속기 출력을 앞뒤로 배분하고, 오프로드용은 저속 기어(4L)를 추가로 제공합니다. 요즘 SUV는 전자식 다판 클러치로 노면 상황에 맞춰 배분 비율을 실시간으로 바꿉니다.",
+ loc:"변속기 바로 뒤.",life:"전용 오일 6~8만 km.",
+ sym:["4WD 전환이 안 되거나 경고등 점등","저속 선회 시 브레이크 걸리는 듯한 저항","케이스 접합부 누유"]},
+
+/* ── 03 제동 ── */
+{s:"brake",c:"B-01",ko:"브레이크 패드",en:"Brake Pad",sum:"디스크를 눌러 차를 세우는 마찰재. 가장 자주 가는 소모품.",
+ easy:"자전거 브레이크의 고무 조각과 같습니다. 돌아가는 원판을 꽉 눌러 차를 세우고, 대신 자기가 조금씩 닳습니다.",
+ role:"캘리퍼 피스톤이 패드를 디스크에 밀착시켜 운동에너지를 열로 바꿉니다. 저스트더스트형, 고온에 강한 세미메탈 등 재질에 따라 제동 감각과 분진량이 달라집니다.",
+ loc:"각 바퀴 브레이크 캘리퍼 안쪽, 디스크 양면.",life:"3~5만 km (앞바퀴가 뒤보다 빨리 닳습니다).",
+ sym:["제동 시 '끼이익' 하는 마모 경고음","브레이크 페달이 깊어짐","휠에 검은 분진이 유난히 많이 붙음"]},
+{s:"brake",c:"B-02",ko:"브레이크 디스크",en:"Brake Rotor",sum:"패드가 물어 잡는 회전 원판. 마찰열을 받아내고 흘려보낸다.",
+ easy:"패드가 물어 잡는 쇠 원판입니다. 바퀴와 함께 돌아갑니다. 이게 휘면 브레이크를 밟을 때 핸들이 덜덜 떨립니다.",
+ role:"패드와 함께 마모되며 두께가 줄고, 열 변형이 오면 두께가 불균일해집니다. 벤틸레이티드 디스크는 안쪽에 통풍 구멍을 두어 방열 성능을 높인 형식입니다.",
+ loc:"휠 허브에 볼트로 고정, 휠 안쪽.",life:"패드 교체 2회당 1회 정도, 두께 한계 표기 준수.",
+ sym:["브레이크 밟을 때 스티어링이 좌우로 떨림","고속에서 제동 시 페달 진동","표면에 깊은 홈이나 무지개색 열 변색"]},
+{s:"brake",c:"B-03",ko:"브레이크 캘리퍼",en:"Brake Caliper",sum:"유압으로 패드를 밀어붙이는 집게. 바퀴마다 하나씩.",
+ easy:"원판을 물어 잡는 집게입니다. 페달을 밟으면 이 집게가 오므라들면서 패드를 밀어붙입니다.",
+ role:"마스터 실린더에서 온 유압이 피스톤을 밀어 패드를 디스크에 압착합니다. 슬라이딩 핀이 굳거나 피스톤 씰이 상하면 한쪽만 제동이 걸려 편마모가 생깁니다.",
+ loc:"디스크를 감싸는 형태로 너클에 고정.",life:"반영구 — 슬라이드 핀 그리스는 패드 교체 시 재도포.",
+ sym:["한쪽 패드만 유난히 빨리 닳음","주행 후 특정 휠만 손을 못 댈 만큼 뜨거움","제동 시 차가 한쪽으로 쏠림"]},
+{s:"brake",c:"B-04",ko:"드럼 브레이크·라이닝",en:"Drum Brake & Lining",sum:"드럼 안쪽에서 슈를 벌려 밀착시키는 방식. 주로 뒷바퀴.",
+ easy:"원판을 바깥에서 누르는 대신, 통 안쪽에서 벌려 밀어붙이는 방식입니다. 요즘은 소형차 뒷바퀴 정도에만 남아 있습니다.",
+ role:"자기 배력 효과가 있어 작은 힘으로 큰 제동력을 냅니다. 다만 열이 안에 갇혀 페이드가 오기 쉽고, 물이 들어가면 잘 마르지 않아 요즘은 소형차 뒷바퀴 정도에 남아 있습니다.",
+ loc:"뒷바퀴 내부(드럼식 채용 차종).",life:"라이닝 6~10만 km.",
+ sym:["주차 브레이크가 잘 안 잡힘","저속에서 '스윽스윽' 긁는 소리","드럼 내부 잔여물로 인한 제동력 저하"]},
+{s:"brake",c:"B-05",ko:"마스터 실린더",en:"Master Cylinder",sum:"페달 힘을 유압으로 바꿔 각 바퀴로 보내는 출발점.",
+ easy:"브레이크 페달을 밟은 힘을 액체 압력으로 바꿔 네 바퀴로 보내는 출발점입니다.",
+ role:"두 개의 독립 회로로 나뉘어 한쪽이 새도 나머지로 최소 제동이 가능하도록 설계됩니다. 내부 씰이 마모되면 압력이 새면서 페달이 서서히 바닥까지 내려갑니다.",
+ loc:"엔진룸 운전석 쪽 격벽, 브레이크 오일통 아래.",life:"반영구 — 오일 관리 상태에 좌우.",
+ sym:["밟은 페달이 서서히 가라앉음","브레이크 오일이 계속 줄어듦","제동력이 전반적으로 약해짐"]},
+{s:"brake",c:"B-06",ko:"브레이크 부스터",en:"Brake Booster",sum:"엔진 부압을 이용해 페달 밟는 힘을 몇 배로 키워주는 배력 장치.",
+ easy:"브레이크에 달린 힘 증폭기입니다. 이게 없으면 페달이 돌덩이처럼 무거워서 발 힘만으로는 차를 못 세웁니다.",
+ role:"진공과 대기압의 차이로 다이어프램을 밀어 페달 답력을 증폭합니다. 전동화 차량은 엔진 부압이 없어 전동 부스터나 통합형 유압 유닛(IEB)을 씁니다.",
+ loc:"마스터 실린더 뒤, 페달과 사이.",life:"반영구 — 체크밸브와 호스는 점검 대상.",
+ sym:["페달이 갑자기 돌덩이처럼 딱딱해짐","브레이크를 밟으면 엔진 회전이 흔들림","페달 부근에서 '쉬익' 하는 공기 새는 소리"]},
+{s:"brake",c:"B-07",ko:"브레이크 호스·파이프",en:"Brake Line",sum:"유압을 각 바퀴까지 나르는 금속관과 고무 호스.",
+ easy:"페달의 힘을 바퀴까지 나르는 물길입니다. 이 관이 부풀거나 새면 아무리 밟아도 힘이 바퀴까지 안 갑니다.",
+ role:"차체 구간은 강관, 서스펜션이 움직이는 구간은 유연한 고무 호스를 씁니다. 호스가 부풀면 압력이 흡수돼 페달이 물렁해지는데, 이를 막으려 메시로 감싼 스테인리스 호스로 교체하기도 합니다.",
+ loc:"마스터 실린더에서 네 바퀴 캘리퍼까지.",life:"고무 호스 10년 내외 점검, 부식 시 즉시 교체.",
+ sym:["페달이 스펀지처럼 물렁함","호스 표면 균열이나 부풀음","파이프 부식 부위의 오일 흔적"]},
+{s:"brake",c:"B-08",ko:"ABS 모듈·휠 스피드 센서",en:"ABS Module & Wheel Speed Sensor",sum:"바퀴 잠김을 감지해 유압을 초당 수십 번 끊어주는 전자 제어부.",
+ easy:"급브레이크에 바퀴가 잠기면 차가 그대로 미끄러집니다. 사람 대신 1초에 수십 번 브레이크를 잡았다 놨다 해주는 장치입니다.",
+ role:"각 휠의 회전 속도를 읽어 한 바퀴만 급격히 느려지면 잠김으로 판단하고 유압을 미세하게 풀었다 조입니다. 이 센서 값은 ESC, 경사로 밀림 방지, TPMS 간접 방식까지 함께 씁니다.",
+ loc:"모듈은 엔진룸, 센서는 각 휠 허브.",life:"반영구 — 센서는 이물질·단선으로 고장 가능.",
+ sym:["ABS·ESC 경고등 동시 점등","계기판 속도계가 순간적으로 0으로 떨어짐","급제동 시 ABS가 작동하지 않고 그대로 잠김"]},
+{s:"brake",c:"B-09",ko:"주차 브레이크",en:"Parking Brake / EPB",sum:"주차 시 차를 붙잡아 두는 기계식 또는 전자식 제동 장치.",
+ easy:"주차했을 때 차가 굴러가지 않게 붙잡아 두는 장치입니다. 예전엔 손으로 당기는 레버였고 요즘은 버튼입니다.",
+ role:"과거엔 케이블로 뒷바퀴를 당겼지만, 지금은 캘리퍼에 모터를 붙여 버튼으로 조작하는 EPB가 일반적입니다. EPB는 오토홀드와 연동돼 정차 중 페달에서 발을 뗄 수 있게 해줍니다.",
+ loc:"뒷바퀴 캘리퍼 또는 드럼.",life:"케이블식은 주기적 장력 조정 필요.",
+ sym:["레버를 많이 당겨야 잡힘 (케이블 늘어남)","EPB 경고등 점등 및 해제 불가","해제 후에도 뒤에서 끌리는 느낌"]},
+{s:"brake",c:"B-10",ko:"브레이크 오일",en:"Brake Fluid",sum:"페달 힘을 그대로 전달하는 비압축성 액체. 수분을 빨아들인다.",
+ easy:"페달의 힘을 전달하는 액체입니다. 공기 중 수분을 빨아들이는 성질이 있어서, 오래 두면 긴 내리막에서 끓어버리고 그 순간 브레이크가 안 듣습니다.",
+ role:"DOT3·DOT4 등급이 흔하고, 등급이 높을수록 끓는점이 높습니다. 공기 중 수분을 흡수하는 성질이 있어 시간이 지나면 끓는점이 낮아지고, 산길 내리막처럼 열이 쌓이면 기포가 생겨 제동력이 사라집니다.",
+ loc:"엔진룸 리저버 탱크 및 전 유압 계통.",life:"2년 또는 4만 km — 색이 짙어지면 조기 교체.",
+ sym:["긴 내리막 후 페달이 푹 꺼짐 (베이퍼 록)","오일 색이 갈색으로 짙어짐","페달 답력이 평소보다 물렁함"]},
+
+/* ── 04 서스펜션 ── */
+{s:"susp",c:"S-01",ko:"쇼크 업소버",en:"Shock Absorber",sum:"스프링의 출렁임을 감쇠시켜 잡아주는 유압 댐퍼.",
+ easy:"스프링만 있으면 차가 트램펄린처럼 방방 뜁니다. 그 출렁임을 눌러 잡아주는 부품입니다.",
+ role:"스프링만 있으면 차가 계속 출렁이므로, 오일이 좁은 밸브를 지나며 생기는 저항으로 진동을 열로 바꿔 없앱니다. 감쇠력이 곧 승차감과 코너링 안정성을 결정합니다.",
+ loc:"각 바퀴, 스프링과 함께 또는 별도로 배치.",life:"8~10만 km — 서서히 나빠져 알아채기 어렵습니다.",
+ sym:["과속방지턱 후 차체가 두세 번 더 출렁임","코너에서 차체 기울기가 커짐","댐퍼 몸통에 오일이 배어나온 자국"]},
+{s:"susp",c:"S-02",ko:"코일 스프링",en:"Coil Spring",sum:"차체 하중을 받치고 노면 충격을 탄성으로 흡수하는 스프링.",
+ easy:"볼펜 안의 용수철을 크게 키웠다고 보면 됩니다. 차 무게를 받치면서 노면 충격을 눌러 흡수합니다.",
+ role:"차체 무게 지지와 충격 흡수를 동시에 맡습니다. 스프링 상수가 높으면 단단하고 롤이 적지만 승차감이 나빠져, 차종 성격에 맞춰 감쇠력과 함께 세팅합니다.",
+ loc:"각 바퀴 서스펜션 상부.",life:"반영구 — 부식이나 절손 시 교체.",
+ sym:["차고가 한쪽만 낮아짐","요철 통과 시 '탕' 하는 금속음","스프링 표면 도장 벗겨짐과 녹"]},
+{s:"susp",c:"S-03",ko:"스트럿·인슐레이터",en:"Strut & Mount Insulator",sum:"댐퍼와 스프링을 하나로 합친 조립체와, 그 윗부분의 고무 마운트.",
+ easy:"스프링과 완충기를 한 몸으로 합쳐 기둥처럼 세운 겁니다. 맨 위의 고무 받침이 낡으면 핸들 돌릴 때 뚝뚝 소리가 납니다.",
+ role:"맥퍼슨 스트럿은 댐퍼가 구조 부재 역할까지 겸해 구조가 단순하고 공간 효율이 좋습니다. 상단 인슐레이터는 조향에 따라 회전하는 베어링을 품고 진동을 차단합니다.",
+ loc:"앞바퀴 위, 엔진룸 좌우 상단에 마운트가 보입니다.",life:"인슐레이터 8~12만 km.",
+ sym:["핸들 돌릴 때 앞쪽에서 '뚝뚝' 소리","제자리에서 조향 시 걸리는 느낌","요철 통과 시 실내로 올라오는 충격음"]},
+{s:"susp",c:"S-04",ko:"로어 암·부싱",en:"Lower Control Arm & Bushing",sum:"바퀴를 차체에 연결하고 궤적을 잡아주는 팔과 고무 완충재.",
+ easy:"바퀴를 차체에 붙잡아 두는 팔입니다. 팔 관절에 낀 고무가 낡으면 요철을 넘을 때 둔탁한 소리가 납니다.",
+ role:"바퀴가 위아래로 움직이는 경로를 규정해 얼라인먼트를 유지합니다. 부싱은 미세 진동과 소음을 걸러주는데, 고무라 시간이 지나면 갈라지고 유격이 생깁니다.",
+ loc:"앞·뒤 서브프레임과 너클 사이.",life:"부싱 8~12만 km.",
+ sym:["요철에서 '툭툭' 하는 둔탁한 소음","직진성이 떨어지고 핸들이 흔들림","타이어 안쪽 편마모"]},
+{s:"susp",c:"S-05",ko:"볼 조인트",en:"Ball Joint",sum:"암과 너클을 잇는 구형 관절. 상하 움직임과 조향을 동시에 허용.",
+ easy:"어깨 관절과 같습니다. 위아래로도 움직이고 좌우로도 돌아가야 해서 공 모양으로 만듭니다.",
+ role:"공 모양 핀이 소켓 안에서 자유롭게 움직여 서스펜션 스트로크와 조향 각도를 모두 소화합니다. 안전과 직결되는 부품이라 유격이 생기면 지체 없이 교체합니다.",
+ loc:"로어 암 끝단과 너클 접합부.",life:"10만 km 내외 점검, 부트 손상 시 조기 교체.",
+ sym:["저속 요철에서 '딱' 하는 단발 소음","핸들 유격이 커지고 흔들림","고무 부트 파열과 그리스 유출"]},
+{s:"susp",c:"S-06",ko:"스태빌라이저 바·링크",en:"Stabilizer Bar & Link",sum:"좌우 서스펜션을 비틀림 봉으로 이어 롤을 억제한다.",
+ easy:"좌우 바퀴를 쇠막대 하나로 묶어 둔 겁니다. 코너에서 한쪽이 주저앉으려 하면 반대쪽이 잡아당겨 차가 덜 기웁니다.",
+ role:"코너에서 한쪽만 눌리면 봉이 비틀리며 반대쪽을 끌어당겨 차체 기울기를 줄입니다. 좌우 바퀴가 동시에 같은 방향으로 움직이면 개입하지 않아 승차감 손해가 적습니다.",
+ loc:"앞·뒤 서스펜션을 가로지르며, 링크로 스트럿과 연결.",life:"링크 6~10만 km (부싱보다 먼저 갑니다).",
+ sym:["요철 구간에서 '달그락달그락' 잡소리","코너에서 차체가 예전보다 더 기움","링크 볼 부분 유격"]},
+{s:"susp",c:"S-07",ko:"너클·허브 캐리어",en:"Steering Knuckle",sum:"휠 베어링, 브레이크, 서스펜션 암이 모두 붙는 주물 관절.",
+ easy:"바퀴가 붙는 손목뼈입니다. 브레이크도, 서스펜션 팔도, 베어링도 전부 여기에 모입니다.",
+ role:"바퀴를 차체에 붙잡아 두는 중심 부품으로, 캠버와 캐스터 같은 얼라인먼트 기준각이 여기서 결정됩니다. 사고 충격을 받으면 미세하게 휘어 얼라인먼트가 계속 틀어집니다.",
+ loc:"각 바퀴 안쪽 중심.",life:"반영구 — 충돌 이력 시 정밀 점검.",
+ sym:["얼라인먼트가 조정 후에도 금방 틀어짐","한쪽 타이어만 심한 편마모","직진 시 핸들이 한쪽으로 쏠림"]},
+{s:"susp",c:"S-08",ko:"휠 베어링",en:"Wheel Bearing",sum:"바퀴가 부드럽게 돌게 해주는 정밀 베어링.",
+ easy:"바퀴가 매끄럽게 돌게 해주는 구슬입니다. 닳으면 속도가 오를수록 웅~ 하는 소리가 같이 커집니다.",
+ role:"차체 하중과 코너링 횡력을 견디면서 회전 저항을 최소화합니다. 요즘은 ABS 센서용 자기 인코더가 일체로 들어간 허브 베어링 유닛 형태가 많습니다.",
+ loc:"각 바퀴 허브 내부.",life:"10~15만 km.",
+ sym:["속도에 비례해 커지는 '웅~' 하는 소음","차선 변경 시 소음 크기가 달라짐","휠을 잡고 흔들면 유격이 느껴짐"]},
+{s:"susp",c:"S-09",ko:"서스펜션 형식",en:"Suspension Layout",sum:"멀티링크·토션빔·더블위시본 등 암 배치 구조의 종류.",
+ easy:"바퀴를 어떤 모양의 팔로 붙잡느냐의 차이입니다. 단순할수록 싸고 트렁크가 넓어지고, 복잡할수록 승차감과 접지력이 좋아집니다.",
+ role:"토션빔은 구조가 단순하고 실내 공간에 유리해 소형차 뒤에 많이 쓰이고, 멀티링크는 각 링크가 궤적을 세밀하게 잡아 승차감과 접지력이 좋지만 비싸고 공간을 먹습니다. 더블위시본은 조향 시 캠버 변화가 적어 스포츠·오프로드 차종에 선호됩니다.",
+ loc:"주로 뒷바퀴 구조에서 차이가 큽니다.",life:"구조 자체는 반영구.",
+ sym:["형식에 따른 승차감·거동 차이는 고장이 아닌 설계 특성입니다."]},
+{s:"susp",c:"S-10",ko:"에어 서스펜션",en:"Air Suspension",sum:"금속 스프링 대신 공기 주머니로 차고와 강성을 조절.",
+ easy:"용수철 대신 튜브에 바람을 넣어 차를 받칩니다. 바람 양을 바꾸면 차 높이와 승차감이 함께 달라집니다.",
+ role:"컴프레서로 에어 스프링의 압력을 바꿔 차고를 낮추거나 높이고, 승차감도 조절합니다. 고속에서 차고를 낮춰 공기저항을 줄이거나 험로에서 올려 지상고를 확보할 수 있습니다.",
+ loc:"각 바퀴 에어 스프링, 컴프레서와 에어 탱크는 별도 위치.",life:"에어백 고무 10년 내외, 컴프레서는 소모품.",
+ sym:["주차 후 한쪽 차고가 주저앉음","컴프레서가 과도하게 자주 작동","차고 조절 불가 경고등"]},
+
+/* ── 05 조향 ── */
+{s:"steer",c:"T-01",ko:"스티어링 휠·컬럼",en:"Steering Wheel & Column",sum:"운전자의 조작을 받아 아래로 전달하는 핸들과 축.",
+ easy:"핸들과 거기 달린 축입니다. 축 안에는 사고가 났을 때 접히면서 운전자를 보호하는 구조가 숨어 있습니다.",
+ role:"컬럼 안에는 충돌 시 접히며 충격을 흡수하는 구조와 에어백, 각종 스위치 배선이 들어 있습니다. 텔레스코픽·틸트 기능으로 운전 자세를 맞출 수 있습니다.",
+ loc:"운전석 앞, 대시보드를 관통해 엔진룸까지.",life:"반영구.",
+ sym:["핸들 유격이 커짐","경적이나 스위치 접촉 불량 (클록 스프링)","틸트 고정이 풀림"]},
+{s:"steer",c:"T-02",ko:"랙 앤 피니언",en:"Rack & Pinion Gearbox",sum:"회전 운동을 좌우 직선 운동으로 바꾸는 조향 기어박스.",
+ easy:"핸들을 돌리는 회전을 바퀴를 미는 좌우 움직임으로 바꾸는 장치입니다. 톱니바퀴가 톱니 막대를 밀어내는 구조라고 보면 됩니다.",
+ role:"컬럼 끝 피니언 기어가 톱니 막대(랙)를 좌우로 밀면 타이로드를 통해 앞바퀴 각도가 바뀝니다. 구조가 간단하고 반응이 직접적이라 승용차 표준입니다.",
+ loc:"엔진룸 하단, 좌우 앞바퀴 사이를 가로지릅니다.",life:"반영구 — 부트와 오일 실은 점검 대상.",
+ sym:["핸들 중심부 유격 증가","조향 시 '드득' 하는 걸림","랙 부트 파손과 오일 누유"]},
+{s:"steer",c:"T-03",ko:"MDPS / 전동 파워스티어링",en:"Electric Power Steering",sum:"모터로 조향을 보조하는 전자식 파워 스티어링.",
+ easy:"핸들을 대신 돌려주는 전기 모터입니다. 이게 없으면 주차할 때 핸들이 꿈쩍도 안 할 만큼 무겁습니다.",
+ role:"토크 센서가 운전자의 힘을 읽어 모터가 필요한 만큼 보조합니다. 엔진 동력을 쓰지 않아 연비에 유리하고, 속도에 따라 무게감을 바꾸거나 차선 유지 보조에 개입할 수 있습니다.",
+ loc:"컬럼형(C-MDPS)은 실내 컬럼에, 랙형(R-MDPS)은 랙 위에 장착.",life:"반영구 — 센서·모터 고장 시 어셈블리 교체.",
+ sym:["주행 중 핸들이 갑자기 무거워지고 경고등 점등","조향 보조력이 일정하지 않음","직진에서 미세하게 한쪽으로 당김"]},
+{s:"steer",c:"T-04",ko:"파워 스티어링 펌프·오일",en:"Power Steering Pump & Fluid",sum:"유압식 파워 스티어링에서 압력을 만드는 펌프와 작동유.",
+ easy:"전기 모터가 나오기 전 방식입니다. 전기 대신 기름 압력으로 핸들을 가볍게 만듭니다.",
+ role:"엔진 벨트로 돌아가는 펌프가 유압을 만들어 랙의 피스톤을 밀어줍니다. 확실한 조향 감각이 장점이지만 엔진 동력을 상시 소모해 최근 신차에서는 전동식으로 대체됐습니다.",
+ loc:"엔진 벨트 구동부, 오일 리저버는 엔진룸 상단.",life:"오일 4~6만 km 점검.",
+ sym:["핸들 돌릴 때 '위잉' 하는 펌프 소음","저속 조향이 무거움","오일 색이 검게 변하거나 수위 저하"]},
+{s:"steer",c:"T-05",ko:"타이로드·타이로드 엔드",en:"Tie Rod & Tie Rod End",sum:"랙의 움직임을 바퀴 너클로 전달하는 연결봉과 그 끝 관절.",
+ easy:"핸들의 움직임을 바퀴까지 밀어주는 막대입니다. 여기가 헐거워지면 핸들이 헛돌고 타이어가 한쪽만 닳습니다.",
+ role:"길이를 조절해 토(toe) 값을 맞추는 부품이라 얼라인먼트 작업의 핵심입니다. 엔드의 볼 조인트가 마모되면 유격이 생겨 직진 안정성이 떨어집니다.",
+ loc:"스티어링 랙 양 끝에서 앞바퀴 너클까지.",life:"8~12만 km, 부트 손상 시 조기 교체.",
+ sym:["핸들이 좌우로 흔들리는 유격","요철에서 앞쪽 '딸깍' 소음","타이어 안쪽·바깥쪽 편마모"]},
+{s:"steer",c:"T-06",ko:"유니버설 조인트",en:"Universal Joint",sum:"꺾인 각도에서도 회전을 전달하는 조향축 관절.",
+ easy:"핸들 축은 대시보드를 지나 아래로 꺾여 내려갑니다. 꺾인 채로도 힘이 전해지게 하는 관절입니다.",
+ role:"스티어링 컬럼이 대시보드를 지나 아래로 꺾여 랙에 닿아야 하므로, 각도를 허용하는 조인트가 중간에 들어갑니다. 유격이 생기면 조향 응답이 흐릿해집니다.",
+ loc:"스티어링 컬럼 하단, 격벽 관통 부위.",life:"반영구.",
+ sym:["핸들 조작 시 '뻑뻑' 하는 걸림","조향 초기 응답이 둔해짐","조향 시 미세한 소음"]},
+{s:"steer",c:"T-07",ko:"조향각 센서",en:"Steering Angle Sensor",sum:"핸들이 몇 도 돌아갔는지 읽어 안전 장치에 알려주는 센서.",
+ easy:"핸들을 몇 도 돌렸는지 재는 눈금자입니다. 차가 미끄러질 때 운전자가 어디로 가려 했는지 판단하는 기준이 됩니다.",
+ role:"ESC가 운전자가 의도한 방향과 실제 차량 거동을 비교하는 기준값을 제공합니다. 차선 유지 보조, 서라운드 뷰 가이드라인 등도 이 값을 함께 씁니다.",
+ loc:"스티어링 컬럼 상부 클록 스프링 근처.",life:"반영구 — 얼라인먼트 후 영점 보정 필요.",
+ sym:["ESC 경고등 점등","차선 유지 보조 기능 비활성화","조향 각도가 실제와 다르게 표시"]},
+
+/* ── 06 연료·흡배기 ── */
+{s:"fuel",c:"F-01",ko:"연료 탱크",en:"Fuel Tank",sum:"연료를 담는 용기. 증발가스 회수 장치가 함께 붙는다.",
+ easy:"기름통입니다. 사고에 대비해 대개 뒷좌석 아래 가장 안전한 자리에 숨겨 둡니다.",
+ role:"충돌 안전을 고려해 대개 뒷좌석 아래 보호된 위치에 놓입니다. 내부 연료 증기가 대기로 나가지 않도록 캐니스터로 포집했다가 엔진으로 되돌려 태웁니다.",
+ loc:"뒷좌석 하부 또는 뒤 차축 앞.",life:"반영구 — 하부 부식 점검.",
+ sym:["주유 후 연료 냄새","EVAP 계통 고장 코드","주유구 캡 미체결 시 체크엔진 점등"]},
+{s:"fuel",c:"F-02",ko:"연료 펌프",en:"Fuel Pump",sum:"탱크 안에서 연료를 빨아 엔진까지 압송하는 전동 펌프.",
+ easy:"기름통 안에 잠겨 있는 물펌프입니다. 기름이 자기를 식혀주기 때문에, 늘 바닥까지 태우고 다니면 수명이 짧아집니다.",
+ role:"탱크 안에 잠겨 있어 연료 자체로 냉각·윤활됩니다. 연료를 거의 비운 채로 오래 타면 펌프가 공기에 노출되고 이물질을 빨아들여 수명이 짧아집니다.",
+ loc:"연료 탱크 내부. 뒷좌석 시트 아래로 접근하는 차종이 많습니다.",life:"반영구 — 통상 15만 km 이상.",
+ sym:["시동이 걸렸다 바로 꺼짐","가속 시 힘이 빠지고 울컥거림","시동 걸 때 뒤쪽 '위잉' 소리가 사라짐"]},
+{s:"fuel",c:"F-03",ko:"연료 필터",en:"Fuel Filter",sum:"연료 속 이물질과 수분을 걸러 인젝터를 보호한다.",
+ easy:"기름에 섞인 찌꺼기와 물을 걸러주는 거름망입니다.",
+ role:"수 마이크로미터 단위 정밀 부품인 인젝터에 이물질이 들어가면 바로 손상되므로 필터가 마지막 방어선입니다. 디젤은 수분 분리 기능이 있어 워터 센서가 함께 붙습니다.",
+ loc:"가솔린은 탱크 내장형이 많고, 디젤은 엔진룸 또는 하부.",life:"디젤 4~6만 km / 가솔린 내장형은 대개 무교환.",
+ sym:["가속 시 출력 저하와 울컥거림","디젤 수분 경고등 점등","고속 주행 중 출력이 툭 끊김"]},
+{s:"fuel",c:"F-04",ko:"인젝터",en:"Fuel Injector",sum:"연료를 안개처럼 뿌려 넣는 정밀 분사 밸브.",
+ easy:"분무기 노즐입니다. 기름은 물줄기처럼 부으면 안 타고, 안개처럼 뿌려야 잘 탑니다.",
+ role:"ECU가 밀리초 단위로 열림 시간을 제어해 분사량을 결정합니다. GDI는 연소실에 직접 초고압으로 뿌려 효율이 좋은 대신, 흡기 밸브에 카본이 쌓이기 쉬워 주기적 청소가 권장됩니다.",
+ loc:"흡기 매니폴드(MPI) 또는 연소실 직접(GDI).",life:"반영구 — 카본 세정은 5~8만 km마다 권장.",
+ sym:["냉간 시동 불량과 아이들 떨림","특정 실린더 실화 코드","연비 악화와 매연 증가"]},
+{s:"fuel",c:"F-05",ko:"스로틀 바디",en:"Throttle Body",sum:"흡입 공기량을 조절하는 나비 밸브. 가속 페달의 실제 관문.",
+ easy:"가속 페달을 밟으면 실제로 열리는 공기 문입니다. 페달은 이 문에게 이만큼 열라고 신호를 보낼 뿐입니다.",
+ role:"요즘은 케이블 없이 페달 센서 신호를 받아 모터가 밸브 각도를 여는 전자식(ETC)입니다. 밸브 가장자리에 카본이 쌓이면 미세한 공기량 제어가 어긋나 아이들이 불안정해집니다.",
+ loc:"에어 클리너와 흡기 매니폴드 사이.",life:"반영구 — 5만 km 내외 카본 청소 권장.",
+ sym:["공회전 rpm이 불안정하게 오르내림","가속 페달 반응이 늦음","청소 후 학습 초기화 전까지 시동 꺼짐"]},
+{s:"fuel",c:"F-06",ko:"흡기 매니폴드",en:"Intake Manifold",sum:"공기를 각 실린더로 균등하게 나눠주는 갈래관.",
+ easy:"관 하나를 여러 갈래로 나눠, 각 방에 공기를 똑같이 배달하는 통로입니다.",
+ role:"관의 길이와 굵기가 공기 흐름의 관성(맥동 과급)을 결정해 토크 특성에 직접 영향을 줍니다. 저속 토크와 고속 출력을 모두 잡으려 관 길이를 바꾸는 가변 흡기 기구를 넣기도 합니다.",
+ loc:"엔진 상단, 실린더 헤드 흡기 포트에 결합.",life:"반영구.",
+ sym:["개스킷 노후 시 흡기 누설로 아이들 불안정","가변 흡기 액추에이터 고장 코드","중저속 토크 저하"]},
+{s:"fuel",c:"F-07",ko:"에어 클리너",en:"Air Filter",sum:"엔진이 마시는 공기에서 먼지를 걸러내는 필터.",
+ easy:"엔진이 쓰는 마스크입니다. 먼지가 그대로 들어가면 엔진 안쪽이 사포로 갈리는 것과 같습니다.",
+ role:"엔진은 연료 1에 공기 14 남짓을 쓰기 때문에 어마어마한 양의 공기를 마십니다. 먼지가 그대로 들어가면 실린더 벽을 갈아내므로 이 필터가 엔진 내구성의 첫 관문입니다.",
+ loc:"엔진룸 에어 클리너 박스 안.",life:"1~2만 km, 비포장·황사 주행이 잦으면 단축.",
+ sym:["가속이 둔해지고 연비 하락","막힘 심할 때 검은 매연","박스 내부 낙엽·먼지 퇴적"]},
+{s:"fuel",c:"F-08",ko:"터보차저",en:"Turbocharger",sum:"버려지는 배기 에너지로 터빈을 돌려 흡기를 압축해 밀어 넣는다.",
+ easy:"버려지는 배기가스로 바람개비를 돌리고, 그 힘으로 공기를 억지로 밀어 넣습니다. 같은 크기 엔진으로 훨씬 큰 힘을 냅니다.",
+ role:"같은 배기량으로 더 많은 공기를 넣어 출력을 크게 올립니다. 배기 압력이 충분해야 작동하므로 저회전에서 반응이 늦는 터보 랙이 있고, 가변 지오메트리(VGT)나 트윈스크롤로 이를 줄입니다.",
+ loc:"배기 매니폴드 직후.",life:"엔진오일 관리가 수명을 좌우, 통상 15만 km 이상.",
+ sym:["부스트가 안 올라 가속이 답답함","배기에서 푸른 연기 (베어링 씰 손상)","'끼익' 또는 사이렌 같은 고주파 소음"]},
+{s:"fuel",c:"F-09",ko:"인터쿨러",en:"Intercooler",sum:"압축돼 뜨거워진 흡기를 다시 식히는 열교환기.",
+ easy:"억지로 밀어 넣은 공기는 뜨겁고 부풀어 있습니다. 이걸 다시 식혀 촘촘하게 만드는 냉각기입니다.",
+ role:"공기는 압축되면 온도가 오르고 밀도가 떨어져 과급 효과가 반감됩니다. 인터쿨러로 식히면 같은 부스트에서도 더 많은 산소가 들어가 출력과 노킹 내성이 함께 좋아집니다.",
+ loc:"보통 범퍼 안쪽 라디에이터 앞.",life:"반영구 — 이물질 손상과 호스 이탈 점검.",
+ sym:["부스트 누설로 인한 출력 저하","호스 연결부 오일 자국","전면 충돌 후 냉각 성능 저하"]},
+{s:"fuel",c:"F-10",ko:"배기 매니폴드",en:"Exhaust Manifold",sum:"각 실린더의 배기가스를 한데 모으는 첫 배기 통로.",
+ easy:"각 방에서 나온 배기가스를 한 줄로 모으는 첫 굴뚝입니다.",
+ role:"1000도 가까운 가스를 직접 받아 극심한 열팽창을 반복합니다. 관 길이를 맞춰 배기 간섭을 줄인 형태를 헤더라 부르며, 요즘은 헤드에 일체로 주조해 촉매를 빨리 데우기도 합니다.",
+ loc:"실린더 헤드 배기 포트에 직결.",life:"반영구 — 크랙과 스터드 볼트 절손 점검.",
+ sym:["냉간 시 '따다닥' 하는 배기 누설음","엔진룸에서 배기가스 냄새","공기비 센서 값 이상"]},
+{s:"fuel",c:"F-11",ko:"촉매 변환기",en:"Catalytic Converter",sum:"유해 배출가스 세 종류를 한 번에 정화하는 장치.",
+ easy:"배기가스의 공기청정기입니다. 벌집 모양 속을 지나는 사이에 해로운 성분이 덜 해로운 것으로 바뀝니다.",
+ role:"백금·팔라듐·로듐을 코팅한 벌집 구조에서 일산화탄소, 탄화수소, 질소산화물을 산화·환원시킵니다. 제 성능을 내려면 300도 이상으로 데워져야 해서, 냉간 시동 직후 배출이 가장 많습니다.",
+ loc:"배기 매니폴드 직후 또는 하부 배기관 중간.",life:"반영구 — 엔진 이상 연소 시 급격히 손상.",
+ sym:["체크엔진 등과 촉매 효율 저하 코드","배기가 막혀 고속에서 출력이 안 남","계란 썩은 냄새"]},
+{s:"fuel",c:"F-12",ko:"DPF (매연 포집 필터)",en:"Diesel Particulate Filter",sum:"디젤 매연 입자를 가둬 두었다가 태워 없애는 필터.",
+ easy:"디젤 매연을 그물로 받아 뒀다가, 가끔 뜨겁게 달궈 태워 없애는 장치입니다. 짧은 거리만 타고 다니면 태울 틈이 없어 막힙니다.",
+ role:"미세한 통로에 검댕을 가두고, 일정량이 쌓이면 연료를 추가 분사해 온도를 600도까지 올려 태워 없앱니다(재생). 짧은 거리만 반복 주행하면 재생이 완료되지 못해 막힙니다.",
+ loc:"배기관 중간, 촉매와 함께 배치.",life:"반영구 — 재생 실패 누적 시 강제 재생 또는 클리닝.",
+ sym:["DPF 경고등 점등","가속력 저하와 연비 악화","엔진오일 수위가 증가 (연료 희석)"]},
+{s:"fuel",c:"F-13",ko:"EGR 밸브",en:"EGR Valve",sum:"배기가스 일부를 흡기로 되돌려 연소 온도를 낮춘다.",
+ easy:"배기가스를 조금 다시 마시게 해서 연소 온도를 낮춥니다. 불이 너무 뜨거우면 오히려 나쁜 물질이 더 많이 생기기 때문입니다.",
+ role:"연소 온도가 높을수록 질소산화물이 많이 생기므로, 산소가 적은 배기를 섞어 온도를 떨어뜨립니다. 대신 검댕이 흡기 쪽에 쌓여 밸브와 매니폴드가 막히기 쉽습니다.",
+ loc:"배기 매니폴드와 흡기 매니폴드를 잇는 통로.",life:"반영구 — 10만 km 내외 카본 청소.",
+ sym:["아이들 불안정과 시동 꺼짐","EGR 흐름 부족 고장 코드","가속 시 검은 매연"]},
+{s:"fuel",c:"F-14",ko:"산소 센서",en:"Oxygen / Lambda Sensor",sum:"배기 속 산소량을 읽어 연료 분사량을 실시간 보정한다.",
+ easy:"배기가스를 맛보는 혀입니다. 기름이 너무 많았는지 적었는지 알려줘서 다음 분사량을 고치게 합니다.",
+ role:"촉매가 제대로 일하려면 공연비가 이론값 근처에 있어야 해서, 앞단 센서로 보정하고 뒷단 센서로 촉매 성능을 감시합니다. 노후하면 반응이 느려져 연비와 배출이 함께 나빠집니다.",
+ loc:"촉매 앞뒤 배기관에 하나씩.",life:"10~15만 km.",
+ sym:["연비가 서서히 나빠짐","체크엔진 등과 공연비 관련 코드","아이들 rpm 미세 헌팅"]},
+{s:"fuel",c:"F-15",ko:"머플러·배기관",en:"Muffler & Exhaust Pipe",sum:"배기 소음을 줄이고 가스를 차 뒤로 내보내는 관과 소음기.",
+ easy:"배기 소음기입니다. 안에 칸막이를 여러 겹 두어 소리를 서로 상쇄시킵니다.",
+ role:"내부 격벽과 흡음재로 음압을 상쇄시켜 소음을 줄입니다. 배압을 너무 낮추면 저속 토크가 빠지므로 무작정 뚫는 게 능사는 아닙니다.",
+ loc:"차량 하부를 따라 뒤 범퍼까지.",life:"부식 상태에 좌우, 10년 내외 점검.",
+ sym:["배기음이 갑자기 커짐","하부에서 '탈탈' 거리는 접촉음","연결부 그을음과 배기 누설"]},
+
+/* ── 07 냉각·공조 ── */
+{s:"cool",c:"C-01",ko:"라디에이터",en:"Radiator",sum:"뜨거워진 냉각수를 주행풍으로 식히는 열교환기.",
+ easy:"차 맨 앞에 달린 커다란 냉각 그릴입니다. 뜨거워진 물이 여기를 지나면서 달리는 바람에 열을 뺏깁니다.",
+ role:"엔진에서 열을 받은 냉각수가 가느다란 튜브와 핀을 지나며 공기에 열을 넘깁니다. 앞쪽에 있어 돌 튐과 부식에 노출되고, 벌레와 먼지가 핀을 막으면 냉각 성능이 떨어집니다.",
+ loc:"엔진룸 최전방, 범퍼 그릴 바로 뒤.",life:"반영구 — 냉각수는 주기 교체.",
+ sym:["수온계 상승과 오버히트","주차 자리에 형광색 냉각수 자국","히터 온도가 안 올라감"]},
+{s:"cool",c:"C-02",ko:"워터 펌프",en:"Water Pump",sum:"냉각수를 엔진과 라디에이터 사이로 순환시키는 펌프.",
+ easy:"냉각수를 계속 돌리는 물레방아입니다. 이게 멈추면 물이 한자리에 고여 엔진이 끓습니다.",
+ role:"임펠러가 냉각수를 밀어 엔진 블록의 워터 재킷과 라디에이터를 계속 돌게 합니다. 타이밍 벨트로 구동되는 차종은 벨트 교체 시 함께 바꾸는 게 정석입니다.",
+ loc:"엔진 앞쪽, 벨트나 체인에 물려 있습니다.",life:"타이밍 벨트 교체 주기와 동일하게 관리.",
+ sym:["펌프 하단 배출구에서 냉각수 누수","엔진 앞쪽 '웅' 하는 베어링 소음","주행 중 수온 급상승"]},
+{s:"cool",c:"C-03",ko:"서모스탯",en:"Thermostat",sum:"냉각수 온도에 따라 라디에이터 통로를 여닫는 자동 밸브.",
+ easy:"온도에 따라 저절로 열리고 닫히는 자동 수도꼭지입니다. 차가울 땐 닫아서 빨리 데우고, 뜨거워지면 열어서 식힙니다.",
+ role:"엔진이 차가울 때는 닫혀 있어 빠르게 예열되게 하고, 적정 온도에 도달하면 열려 냉각수를 순환시킵니다. 열린 채 고장 나면 예열이 안 되고, 닫힌 채 고장 나면 곧바로 오버히트로 이어집니다.",
+ loc:"엔진과 라디에이터 상부 호스 연결부.",life:"10만 km 내외 또는 이상 증상 시.",
+ sym:["수온이 정상까지 안 올라가고 히터가 미지근","반대로 급격한 수온 상승","겨울철 연비 악화"]},
+{s:"cool",c:"C-04",ko:"냉각 팬",en:"Cooling Fan",sum:"주행풍이 부족할 때 강제로 바람을 만들어 라디에이터를 식힌다.",
+ easy:"정차 중에는 달리는 바람이 없죠. 그때 대신 바람을 만들어주는 선풍기입니다.",
+ role:"정차나 저속 주행에서는 자연 바람이 없으므로 전동 팬이 돌아 열을 뺍니다. 에어컨을 켜면 콘덴서도 함께 식혀야 해서 팬 작동 빈도가 올라갑니다.",
+ loc:"라디에이터 뒤쪽.",life:"반영구 — 모터와 레지스터가 소모 부위.",
+ sym:["정차 중에만 수온이 올라감","에어컨 성능이 정차 시 급격히 저하","팬 작동음이 비정상적으로 크거나 아예 없음"]},
+{s:"cool",c:"C-05",ko:"냉각수 (부동액)",en:"Coolant / Antifreeze",sum:"열을 나르고 얼지 않게 하며 내부 부식도 막는 액체.",
+ easy:"엔진을 식히는 특수한 물입니다. 겨울에 얼지 않고 여름에 잘 끓지 않게 만든 액체라, 맹물을 채우면 안 됩니다.",
+ role:"물에 에틸렌글리콜과 방청 첨가제를 섞어 어는점을 낮추고 끓는점을 높입니다. 첨가제가 소진되면 냉각 성능보다 먼저 부식 방지 기능이 사라져 라디에이터와 워터 펌프를 갉아먹습니다.",
+ loc:"엔진 워터 재킷, 라디에이터, 히터 코어 전 경로.",life:"장수명 타입 기준 최초 10년/20만 km, 이후 2년 주기.",
+ sym:["색이 탁해지거나 침전물","리저버 수위가 계속 낮아짐","겨울철 결빙으로 순환 불량"]},
+{s:"cool",c:"C-06",ko:"리저버 탱크·라디에이터 캡",en:"Reservoir & Radiator Cap",sum:"냉각수의 팽창을 받아주는 보조 탱크와 압력을 유지하는 캡.",
+ easy:"냉각수는 더워지면 부풀어 넘칩니다. 그 여유분을 받아두는 통과, 압력을 눌러 물이 늦게 끓게 하는 뚜껑입니다.",
+ role:"냉각계는 압력을 걸어 끓는점을 110도 이상으로 올려 씁니다. 캡의 스프링이 약해지면 규정 압력이 유지되지 않아 낮은 온도에서 냉각수가 끓어 넘칩니다.",
+ loc:"라디에이터 옆 반투명 탱크와 상부 캡.",life:"캡 5년 내외 점검.",
+ sym:["주행 후 리저버가 넘칠 만큼 부풀어 오름","수온이 정상인데 냉각수가 끓는 소리","캡 고무 씰 경화"]},
+{s:"cool",c:"C-07",ko:"에어컨 컴프레서",en:"A/C Compressor",sum:"냉매를 압축해 순환시키는 에어컨의 심장.",
+ easy:"에어컨의 심장입니다. 냉매라는 기체를 꽉 눌러 압축해 순환시킵니다.",
+ role:"저압 기체 냉매를 고온·고압으로 압축해 콘덴서로 보냅니다. 엔진 벨트로 돌아가며 마그네틱 클러치로 단속하는 방식이 일반적이고, 전동화 차량은 전동 컴프레서를 씁니다.",
+ loc:"엔진 벨트 구동부.",life:"반영구 — 냉매·오일 부족 시 급격히 손상.",
+ sym:["에어컨을 켜도 찬바람이 안 나옴","작동 시 '드르륵' 하는 금속 소음","클러치가 붙었다 떨어졌다를 반복"]},
+{s:"cool",c:"C-08",ko:"콘덴서",en:"Condenser",sum:"압축된 고온 냉매를 식혀 액체로 바꾸는 실외 열교환기.",
+ easy:"라디에이터 앞에 한 겹 더 붙어 있는 냉각기입니다. 에어컨이 실내에서 걷어낸 열을 바깥으로 버립니다.",
+ role:"라디에이터와 나란히 배치돼 주행풍과 냉각 팬으로 냉매의 열을 버립니다. 앞에 있어 먼지와 벌레가 잘 끼는데, 막히면 냉방 성능이 눈에 띄게 떨어집니다.",
+ loc:"라디에이터 바로 앞.",life:"반영구 — 부식과 이물질 막힘 점검.",
+ sym:["정차 시 냉방이 유난히 약해짐","냉매 누설로 인한 냉방 불량","핀 사이 이물질 퇴적"]},
+{s:"cool",c:"C-09",ko:"팽창밸브·리시버 드라이어",en:"Expansion Valve & Receiver Drier",sum:"냉매를 급격히 팽창시켜 차갑게 만들고, 수분을 제거한다.",
+ easy:"꽉 눌러 두었던 냉매를 좁은 구멍으로 확 뿜습니다. 스프레이 캔을 오래 뿌리면 캔이 차가워지는 것과 같은 원리로 온도가 뚝 떨어집니다.",
+ role:"고압 액체 냉매를 좁은 통로로 뿜어내면 압력이 떨어지며 온도가 급강하합니다. 드라이어는 계통에 들어온 미량의 수분을 흡착해 결빙과 부식을 막습니다.",
+ loc:"증발기 입구 부근, 드라이어는 고압 라인.",life:"에어컨 계통 개방 수리 시 드라이어 함께 교체.",
+ sym:["냉방이 됐다 안 됐다 반복","증발기 결빙으로 바람량 감소","냉매 압력 이상"]},
+{s:"cool",c:"C-10",ko:"이베이퍼레이터",en:"Evaporator",sum:"실내 공기의 열을 빼앗아 찬바람을 만드는 열교환기.",
+ easy:"실제로 찬바람을 만드는 부품입니다. 표면에 물이 맺히는 구조라, 젖은 채로 두면 곰팡이가 피어 에어컨 냄새의 원인이 됩니다.",
+ role:"차가운 냉매가 지나며 공기의 열과 습기를 함께 뺏습니다. 표면에 물이 맺히는 구조라 습한 채로 방치되면 곰팡이가 번식해 냄새의 주범이 됩니다.",
+ loc:"대시보드 안쪽 공조 케이스 내부.",life:"반영구 — 주기적 살균·건조 관리 권장.",
+ sym:["에어컨 켤 때 나는 퀴퀴한 냄새","냉방 성능 저하","조수석 바닥으로 물이 새어 나옴 (드레인 막힘)"]},
+{s:"cool",c:"C-11",ko:"히터 코어",en:"Heater Core",sum:"뜨거운 냉각수를 이용해 실내 난방을 만드는 소형 라디에이터.",
+ easy:"엔진에서 나온 뜨거운 물을 실내로 끌어와 만든 온풍기입니다. 그래서 시동 걸고 바로는 히터가 미지근합니다.",
+ role:"엔진 폐열을 그대로 활용해 난방하므로 별도 에너지가 거의 들지 않습니다. 반대로 전기차는 폐열이 없어 히트펌프나 전기 히터가 필요하고, 이게 겨울철 주행거리 감소의 원인입니다.",
+ loc:"대시보드 안쪽 공조 케이스 내부.",life:"반영구 — 냉각수 관리 상태에 좌우.",
+ sym:["난방이 미지근함","실내 유리에 기름진 김이 서림","조수석 발밑 카펫이 젖고 단내"]},
+{s:"cool",c:"C-12",ko:"캐빈 필터",en:"Cabin Air Filter",sum:"실내로 들어오는 공기에서 먼지와 냄새를 거르는 필터.",
+ easy:"실내로 들어오는 공기의 마스크입니다. 갈아 끼우기 쉬워서 직접 해볼 만한 부품입니다.",
+ role:"활성탄을 넣어 냄새와 일부 가스까지 잡는 제품이 일반적입니다. 관리가 쉬워 직접 교체하기 좋은 부품이면서, 방치하면 바람량 저하와 냄새로 바로 체감됩니다.",
+ loc:"보통 조수석 글로브박스 뒤.",life:"6개월 또는 1만 km.",
+ sym:["송풍 바람량이 눈에 띄게 약해짐","퀴퀴한 냄새","창 김서림이 잘 안 걷힘"]},
+{s:"cool",c:"C-13",ko:"블로어 모터",en:"Blower Motor",sum:"공조 바람을 실제로 불어내는 송풍 팬 모터.",
+ easy:"바람을 실제로 불어내는 선풍기입니다. 1~3단은 안 되고 4단만 나온다면 대개 여기 딸린 부품 문제입니다.",
+ role:"레지스터나 파워 모듈로 회전 속도를 단계별로 조절합니다. 레지스터가 타면 특정 풍량 단계만 작동하지 않는 특징적인 증상이 나타납니다.",
+ loc:"조수석 발밑 공조 케이스 하부.",life:"반영구 — 레지스터는 소모 부위.",
+ sym:["1~3단은 안 되고 4단만 작동","송풍 시 '드르륵' 이물질 소리","바람이 아예 나오지 않음"]},
+
+/* ── 08 전장·전자 ── */
+{s:"elec",c:"L-01",ko:"배터리",en:"Battery",sum:"시동 전류를 공급하고 전장 부하를 안정시키는 축전지.",
+ easy:"차의 건전지입니다. 시동을 걸 때 큰 힘을 한 번에 내보내는 게 주된 일이고, 달리는 동안은 발전기가 다시 채워줍니다.",
+ role:"엔진이 꺼진 상태에서 스타터 모터를 돌릴 만큼의 큰 전류를 순간적으로 내보냅니다. ISG 차량은 시동 반복이 많아 AGM이나 EFB처럼 내구성이 강화된 규격을 써야 합니다.",
+ loc:"엔진룸 한쪽, 일부 차종은 트렁크.",life:"3~4년 (겨울 직전 점검 권장).",
+ sym:["시동 모터가 힘없이 '끼릭끼릭'","정차 시 헤드라이트가 어두워짐","블랙박스 상시 전원 저전압 차단이 잦아짐"]},
+{s:"elec",c:"L-02",ko:"알터네이터",en:"Alternator",sum:"엔진 동력으로 전기를 만들어 차 전체에 공급하는 발전기.",
+ easy:"차 안의 발전소입니다. 엔진 힘의 일부로 전기를 만들어 차 전체에 쓰고 배터리도 충전합니다.",
+ role:"주행 중 전장 부하를 감당하고 남는 전력으로 배터리를 충전합니다. 최근에는 감속할 때만 집중 충전해 연비를 개선하는 가변 전압 제어 방식이 널리 쓰입니다.",
+ loc:"엔진 벨트 구동부.",life:"15만 km 이상 — 베어링과 브러시가 소모 부위.",
+ sym:["배터리 경고등 점등","주행 중 전조등 밝기가 회전수에 따라 출렁임","벨트 쪽에서 '위잉' 하는 소음"]},
+{s:"elec",c:"L-03",ko:"스타터 모터",en:"Starter Motor",sum:"엔진을 처음 돌려 시동을 거는 강력한 전동기.",
+ easy:"멈춰 있는 엔진을 처음 한 번 강제로 돌려주는 힘센 모터입니다. 예초기 시동 줄을 당기는 일을 대신해준다고 보면 됩니다.",
+ role:"피니언 기어를 튀어나오게 해 플라이휠 링 기어와 물린 뒤 엔진을 크랭킹합니다. 시동이 걸리면 즉시 분리되도록 원웨이 클러치가 들어 있습니다.",
+ loc:"엔진과 변속기 접합부 근처.",life:"반영구 — ISG 차량은 전용 강화 사양.",
+ sym:["시동 버튼에 '딸깍' 소리만 나고 안 걸림","크랭킹 중 '끼익' 금속 마찰음","시동이 걸릴 때도 있고 안 걸릴 때도 있음"]},
+{s:"elec",c:"L-04",ko:"ECU (엔진 제어 유닛)",en:"Engine Control Unit",sum:"각종 센서를 읽고 연료·점화·과급을 결정하는 두뇌.",
+ easy:"엔진의 두뇌입니다. 여러 센서를 읽고 기름을 얼마나 뿌릴지, 언제 불을 붙일지 매 순간 결정합니다.",
+ role:"수십 개 센서 값을 초당 수백 번 계산해 분사량, 점화 시기, 스로틀 개도, 부스트 압력을 정합니다. 이상이 생기면 고장 코드를 저장하고 출력을 제한하는 림프 홈 모드로 들어갑니다.",
+ loc:"엔진룸 또는 실내 격벽 근처.",life:"반영구 — 침수와 전압 이상에 취약.",
+ sym:["체크엔진 등 점등과 출력 제한","고장 코드가 여러 계통에 동시 발생","통신 불량으로 진단기 연결 실패"]},
+{s:"elec",c:"L-05",ko:"점화 플러그",en:"Spark Plug",sum:"고전압 불꽃을 튀겨 혼합기에 불을 붙이는 부품.",
+ easy:"가스레인지의 점화 장치와 같습니다. 불꽃을 튀겨 기름에 불을 붙입니다.",
+ role:"전극 간극 사이로 수만 볼트를 방전시켜 연소를 시작합니다. 백금이나 이리듐 전극은 소모가 적어 교체 주기가 길지만, 간극이 벌어지면 실화와 연비 저하로 이어집니다.",
+ loc:"실린더 헤드 상부, 각 실린더마다 1개(또는 2개).",life:"일반 2~4만 km / 백금·이리듐 8~16만 km.",
+ sym:["아이들 떨림과 실화","가속 시 울컥거림","연비 저하와 시동성 불량"]},
+{s:"elec",c:"L-06",ko:"점화 코일",en:"Ignition Coil",sum:"12V를 수만 볼트로 끌어올리는 승압 변압기.",
+ easy:"12볼트짜리 전기를 수만 볼트로 끌어올리는 변압기입니다. 그 정도가 돼야 불꽃이 튑니다.",
+ role:"1차 코일에 흐르던 전류를 끊는 순간 2차 코일에 고전압이 유도되는 원리를 씁니다. 요즘은 플러그마다 코일이 하나씩 직접 꽂히는 다이렉트 방식(COP)이 표준입니다.",
+ loc:"각 점화 플러그 위에 직접 장착.",life:"10만 km 내외 — 플러그와 함께 점검.",
+ sym:["특정 실린더만 실화 코드","가속 시 '툭툭' 끊기는 느낌","빗길이나 습한 날 증상 악화"]},
+{s:"elec",c:"L-07",ko:"퓨즈·릴레이 박스",en:"Fuse & Relay Box",sum:"과전류를 끊어 회로를 보호하고, 큰 전류를 스위칭한다.",
+ easy:"퓨즈는 전기가 너무 많이 흐르면 스스로 끊어져 화재를 막는 안전장치입니다. 자꾸 끊긴다면 퓨즈가 아니라 다른 데 원인이 있다는 신호입니다.",
+ role:"퓨즈는 정해진 전류를 넘으면 스스로 끊겨 배선 화재를 막고, 릴레이는 작은 신호로 큰 전류를 켜고 끕니다. 퓨즈가 반복해서 끊긴다면 원인은 퓨즈가 아니라 회로 쪽에 있습니다.",
+ loc:"엔진룸 한쪽과 실내 운전석 무릎 아래.",life:"반영구 — 퓨즈는 소모품.",
+ sym:["특정 전장 하나만 갑자기 작동 불가","퓨즈 교체 후에도 반복 단선","릴레이에서 '딸깍' 소리만 반복"]},
+{s:"elec",c:"L-08",ko:"와이어링 하네스",en:"Wiring Harness",sum:"차 전체를 잇는 배선 다발과 커넥터.",
+ easy:"차 전체를 잇는 전선 다발입니다. 다 펴면 수 킬로미터가 나옵니다.",
+ role:"수 킬로미터에 달하는 전선을 계통별로 묶어 정리한 조립체입니다. 최근에는 배선을 줄이려 CAN 같은 통신망으로 여러 신호를 한 쌍의 선에 실어 보냅니다.",
+ loc:"차량 전체.",life:"반영구 — 도어 힌지 부위 굴곡 단선 주의.",
+ sym:["도어를 여닫을 때만 생기는 간헐적 오작동","여러 계통에서 산발적 경고등","커넥터 부식과 접촉 불량"]},
+{s:"elec",c:"L-09",ko:"엔진 센서류",en:"Engine Sensors",sum:"크랭크각·캠각·흡기압·노크·수온 등 ECU의 감각기관.",
+ easy:"엔진의 눈과 귀입니다. 값은 싸지만 하나만 고장 나도 시동이 아예 안 걸릴 수 있습니다.",
+ role:"크랭크각 센서는 점화 시기의 기준점이라 고장 나면 아예 시동이 안 걸리고, 노크 센서는 이상 연소를 감지해 점화 시기를 늦춰 엔진을 지킵니다. 대부분 저렴하지만 증상은 극적입니다.",
+ loc:"엔진 곳곳.",life:"반영구 — 열과 진동에 노출돼 개별 고장 가능.",
+ sym:["주행 중 갑작스러운 시동 꺼짐","시동 자체가 안 걸림","이유 없는 출력 제한과 경고등"]},
+{s:"elec",c:"L-10",ko:"OBD-II 진단 커넥터",en:"OBD-II Port",sum:"차량 고장 코드와 실시간 데이터를 꺼내는 표준 진단 단자.",
+ easy:"차의 건강검진 단자입니다. 경고등이 뜨면 여기에 진단기를 꽂아 원인 코드를 읽습니다.",
+ role:"16핀 규격이 국제적으로 통일돼 있어 어느 차든 같은 스캐너를 꽂을 수 있습니다. 고장 코드뿐 아니라 실시간 센서 값과 주행 이력까지 읽을 수 있습니다.",
+ loc:"운전석 무릎 위쪽, 대시보드 하단.",life:"반영구.",
+ sym:["경고등이 떴을 때 여기서 원인 코드를 먼저 확인합니다.","코드를 지워도 원인이 남아 있으면 다시 점등됩니다."]},
+{s:"elec",c:"L-11",ko:"헤드램프·테일램프",en:"Headlamp & Tail Lamp",sum:"야간 시야를 확보하고 다른 차에 내 위치와 의도를 알린다.",
+ easy:"밤에 앞을 보는 눈이자, 다른 차에게 내 위치와 의도를 알리는 신호입니다.",
+ role:"할로겐에서 HID를 거쳐 LED가 표준이 됐고, 상대 차량만 골라 빛을 가리는 지능형 상향등(ADB)까지 나왔습니다. 렌즈가 황변하면 광량이 크게 떨어지므로 복원이나 교체가 필요합니다.",
+ loc:"차량 전후방 좌우.",life:"LED 반영구 / 할로겐 벌브는 소모품.",
+ sym:["한쪽 등만 어둡거나 점등 불가","렌즈 황변과 내부 습기","LED 일부 소자만 꺼짐"]},
+{s:"elec",c:"L-12",ko:"와이퍼 모터·블레이드",en:"Wiper Motor & Blade",sum:"빗물을 닦아 시야를 확보하는 구동부와 고무 날.",
+ easy:"앞 유리를 닦는 팔입니다. 고무날은 햇빛에 굳어 금방 못 쓰게 되는 소모품이라 자주 갈아야 합니다.",
+ role:"모터의 회전을 링크 기구가 좌우 왕복으로 바꿉니다. 블레이드 고무는 자외선과 열에 굳어 밀착력을 잃으므로 소모품 중에서도 교체 주기가 짧습니다.",
+ loc:"전면 유리 하단 카울, 후면 유리.",life:"블레이드 6개월~1년.",
+ sym:["닦은 자리에 줄이 남거나 물기가 뭉침","작동 시 '드득' 하며 튀는 채터링","모터 고장으로 정위치 복귀 불가"]},
+
+/* ── 09 차체·외장 ── */
+{s:"body",c:"Y-01",ko:"모노코크 바디",en:"Monocoque Body",sum:"차체 껍데기 자체가 골격 역할을 하는 일체형 구조.",
+ easy:"달걀 껍데기처럼 껍데기 자체가 뼈대 노릇을 합니다. 따로 굵은 철골을 넣지 않아 가볍고 실내가 넓어집니다.",
+ role:"별도 프레임 없이 패널과 멤버를 용접해 하나의 상자 구조로 강성을 냅니다. 가볍고 실내 공간에 유리해 대부분의 승용차가 채택하며, 험로용 차량은 여전히 별도 프레임(바디 온 프레임)을 쓰기도 합니다.",
+ loc:"차량 전체 골격.",life:"반영구 — 사고 이력과 부식이 관건.",
+ sym:["문 여닫음이 뻑뻑하거나 단차 발생","주행 중 삐걱거리는 뒤틀림 소음","하부 부식"]},
+{s:"body",c:"Y-02",ko:"범퍼·범퍼 레일",en:"Bumper & Bumper Beam",sum:"저속 충돌 흡수용 커버와 그 안의 금속 빔.",
+ easy:"겉에 보이는 플라스틱은 사실 껍데기입니다. 진짜 충격은 그 안에 숨은 쇠막대가 받습니다.",
+ role:"바깥의 플라스틱 커버는 공력과 디자인을 맡고, 실제 충격은 안쪽 금속 빔과 크래시 박스가 받습니다. 요즘 범퍼는 각종 센서와 카메라의 자리이기도 합니다.",
+ loc:"차량 전후방 최외곽.",life:"반영구 — 충돌 시 빔과 크래시 박스 함께 점검.",
+ sym:["가벼운 접촉 후에도 센서 오작동","커버 고정 클립 파손으로 들뜸","도장 크랙"]},
+{s:"body",c:"Y-03",ko:"후드 (보닛)",en:"Hood",sum:"엔진룸을 덮는 개폐식 패널. 보행자 보호 구조가 들어간다.",
+ easy:"엔진룸 뚜껑입니다. 사고 때 운전석 쪽으로 밀려들지 않고 위로 접히도록 미리 주름을 넣어 만듭니다.",
+ role:"충돌 시 승객석으로 밀려들지 않고 접히도록 주름 구조가 설계돼 있습니다. 일부 차량은 보행자와 부딪히면 후드 뒤쪽을 순간적으로 들어 올려 완충 공간을 만듭니다.",
+ loc:"엔진룸 상부.",life:"반영구.",
+ sym:["후드 잠금이 헐거워 주행 중 진동","힌지 부식","가스 리프트 힘이 빠져 후드가 내려앉음"]},
+{s:"body",c:"Y-04",ko:"펜더",en:"Fender",sum:"바퀴 위를 덮어 흙과 물이 튀는 것을 막는 패널.",
+ easy:"바퀴 위를 덮은 흙받이입니다. 안쪽 덮개가 깨지면 물과 모래가 그대로 들어옵니다.",
+ role:"바퀴가 튀기는 이물질을 막고 차체 옆면 형상을 만듭니다. 안쪽 인너 펜더(휠 하우스 라이너)가 손상되면 엔진룸이나 도어 안쪽으로 물과 모래가 그대로 들어갑니다.",
+ loc:"각 바퀴 위 차체 측면.",life:"반영구 — 하단 부식 취약.",
+ sym:["휠하우스 안쪽에서 '드드득' 접촉음","펜더 하단 부풀음과 녹","주행 중 물 튀는 소리가 커짐"]},
+{s:"body",c:"Y-05",ko:"도어·힌지·스트라이커",en:"Door, Hinge & Striker",sum:"승하차 문과 이를 지지·고정하는 부품.",
+ easy:"타고 내리는 문입니다. 문 안에는 옆에서 부딪혔을 때를 대비한 쇠막대가 숨어 있습니다.",
+ role:"측면 충돌에 대비해 도어 안에는 임팩트 빔이 들어 있습니다. 힌지와 스트라이커는 반복 하중을 받아 마모되면 문이 처지거나 닫힘 소리가 달라집니다.",
+ loc:"차체 좌우.",life:"반영구 — 힌지 그리스 주기 도포.",
+ sym:["문이 처져 닫을 때 걸림","'삐걱' 하는 힌지 소음","주행 중 도어 쪽 풍절음 증가"]},
+{s:"body",c:"Y-06",ko:"A·B·C 필러",en:"Pillars",sum:"지붕을 받치는 기둥. 앞에서부터 A, B, C로 부른다.",
+ easy:"지붕을 받치는 기둥입니다. 앞에서부터 A, B, C. 차가 뒤집혔을 때 실내가 찌그러지지 않게 버티는 핵심 뼈대입니다.",
+ role:"전복 시 실내 공간을 지켜내는 핵심 구조물이라 초고장력강이 집중 투입됩니다. A 필러는 두꺼울수록 안전하지만 시야를 가리는 문제가 있어 설계상 늘 절충이 필요합니다.",
+ loc:"앞 유리 양옆(A), 앞뒤 문 사이(B), 뒤 유리 옆(C).",life:"반영구 — 손상 시 구조 안전에 직결.",
+ sym:["필러 손상은 사고 이력 판단의 핵심 지표입니다.","용접 흔적이나 실러 이질감이 보이면 정밀 확인이 필요합니다."]},
+{s:"body",c:"Y-07",ko:"윈드실드",en:"Windshield",sum:"두 장의 유리 사이에 필름을 넣어 깨져도 흩어지지 않는 접합 유리.",
+ easy:"유리 두 장 사이에 얇은 필름을 넣어 붙인 유리입니다. 깨져도 조각이 흩어지지 않고 필름에 붙어 있습니다.",
+ role:"시야 확보뿐 아니라 전복 시 지붕 강성을 분담하고 조수석 에어백이 펴지는 받침 역할까지 합니다. 카메라 기반 운전자 보조 장치가 여기 붙어 있어 교체 후 캘리브레이션이 필요합니다.",
+ loc:"차량 전면.",life:"반영구 — 칩 손상은 조기 보수.",
+ sym:["작은 흠집이 온도 변화로 길게 번짐","교체 후 ADAS 오작동 (보정 미실시)","몰딩 노후로 누수"]},
+{s:"body",c:"Y-08",ko:"사이드 미러",en:"Side Mirror",sum:"후측방 시야를 확보하는 거울. 전동 조절과 열선이 기본.",
+ easy:"옆뒤를 보는 거울이지만, 요즘은 카메라와 경고등까지 들어 있어 부품 하나에 기능이 잔뜩 담겨 있습니다.",
+ role:"접이 모터, 열선, 방향지시등, 사각지대 경고 표시, 서라운드 뷰 카메라까지 들어가 부품 하나에 기능이 집약돼 있습니다. 접촉 사고가 잦아 교체 빈도가 높은 외장 부품입니다.",
+ loc:"좌우 앞문 바깥쪽.",life:"반영구.",
+ sym:["전동 조절이나 접이 작동 불가","'드드득' 하는 모터 공회전 소리","열선 미작동으로 겨울철 김서림"]},
+{s:"body",c:"Y-09",ko:"에어백·SRS 모듈",en:"Airbag & SRS Module",sum:"충돌 감지 후 수십 밀리초 만에 부풀어 충격을 분산한다.",
+ easy:"부딪히는 순간 눈 깜짝할 새보다 빠르게 부푸는 방석입니다. 안전벨트를 맨 상태를 전제로 만들어져서, 벨트를 안 매면 오히려 위험합니다.",
+ role:"충돌 센서가 감속도를 읽으면 인플레이터의 화약이 점화되며 가스로 백을 채웁니다. 시트벨트를 매야 제 효과가 나도록 설계돼 있어, 보조(Supplemental) 장치라 부릅니다.",
+ loc:"스티어링 휠, 대시보드, 시트 옆, 지붕 라인.",life:"반영구 — 경고등 점등 시 즉시 점검.",
+ sym:["에어백 경고등 상시 점등","시트 아래 커넥터 접촉 불량으로 간헐 경고","전개 이력이 있으면 모듈 전체 교체 필요"]},
+{s:"body",c:"Y-10",ko:"시트벨트·프리텐셔너",en:"Seat Belt & Pretensioner",sum:"승객을 시트에 붙잡아 두는 가장 효과적인 안전 장치.",
+ easy:"가장 효과가 큰 안전장치입니다. 사고 순간 벨트를 확 되감아 몸을 시트에 붙여 둡니다.",
+ role:"충돌 순간 프리텐셔너가 벨트를 순간적으로 되감아 몸을 시트에 밀착시키고, 로드 리미터는 흉부 압박이 과해지기 전에 벨트를 조금 풀어줍니다. 두 장치가 짝을 이뤄 작동합니다.",
+ loc:"각 좌석 B·C 필러와 시트.",life:"반영구 — 전개 이력 시 교체.",
+ sym:["벨트가 부드럽게 되감기지 않음","급제동 시 잠김 기능 불량","전개된 프리텐셔너는 재사용 불가"]},
+{s:"body",c:"Y-11",ko:"언더커버",en:"Under Cover",sum:"차량 바닥을 덮어 공기 흐름을 정리하고 부품을 보호한다.",
+ easy:"차 바닥을 덮은 판입니다. 바람이 매끄럽게 흐르게 해 연비에도 보탬이 됩니다. 방지턱에 긁혀 덜렁거리는 일이 잦습니다.",
+ role:"하부 요철을 매끄럽게 덮어 공기저항을 줄이고 고속 안정성을 높이며, 튄 돌과 물에서 부품을 지킵니다. 연비에 은근히 기여하는 부품이라 파손 시 그대로 두면 손해입니다.",
+ loc:"엔진룸 하부와 차량 바닥.",life:"반영구 — 고정 클립 파손이 잦습니다.",
+ sym:["주행 중 하부에서 펄럭이는 소리","방지턱에서 바닥이 긁히는 소음","고속 주행 시 풍절음 증가"]},
+{s:"body",c:"Y-12",ko:"크럼플 존",en:"Crumple Zone",sum:"충돌 시 계획대로 찌그러지며 에너지를 흡수하는 구간.",
+ easy:"차 앞뒤를 일부러 잘 찌그러지게 만든 구간입니다. 찌그러지면서 충격을 대신 받아주기 때문에, 사고 때 앞이 심하게 구겨진 차가 오히려 잘 만든 차입니다.",
+ role:"차 앞뒤를 일부러 무르게 만들어 충격을 시간적으로 늘려 승객에게 가는 감속도를 낮춥니다. 반대로 승객실은 단단하게 지켜 생존 공간을 확보합니다. 잘 찌그러진 차가 잘 만든 차인 이유입니다.",
+ loc:"전방 엔진룸과 후방 트렁크 영역.",life:"1회성 — 충돌 후 정확한 복원 수리 필요.",
+ sym:["사고 후 부정확한 수리는 다음 충돌 시 흡수 성능을 떨어뜨립니다.","프레임 계측으로 변형 여부를 확인해야 합니다."]},
+
+/* ── 10 휠·타이어 ── */
+{s:"wheel",c:"W-01",ko:"타이어",en:"Tire",sum:"차와 노면이 닿는 유일한 부품. 손바닥 네 개 크기가 전부다.",
+ easy:"차가 땅에 닿는 유일한 부분입니다. 네 바퀴를 다 합쳐도 실제 닿는 면적은 손바닥 네 개 정도밖에 안 됩니다. 달리고 서고 도는 모든 일이 이 좁은 면을 거칩니다.",
+ role:"구동력, 제동력, 선회력이 모두 이 작은 접지면을 통과합니다. 옆면의 205/55R16 91V 같은 표기는 순서대로 폭(mm), 편평비(%), 레이디얼, 휠 지름(인치), 하중지수, 속도기호를 뜻합니다.",
+ loc:"각 휠 외주.",life:"트레드 마모 한계 1.6mm 또는 제조 후 4~6년.",
+ sym:["트레드 마모 한계 표시(TWI)가 노면과 같은 높이","측면 갈라짐이나 부풀음","편마모와 주행 중 진동"]},
+{s:"wheel",c:"W-02",ko:"휠 (림)",en:"Wheel / Rim",sum:"타이어를 잡아주고 허브에 고정되는 금속 바퀴.",
+ easy:"타이어를 끼우는 쇠 바퀴입니다. 연석에 세게 긁히면 눈에 안 보일 만큼 살짝 휘고, 그 때문에 고속에서 핸들이 떨립니다.",
+ role:"강판을 찍어낸 스틸 휠은 저렴하고 튼튼하며, 알루미늄 합금 휠은 가볍고 방열이 좋습니다. 서스펜션이 따라가야 할 무게(스프렁 하중)에 직접 영향을 줘서 승차감과도 관련이 있습니다.",
+ loc:"각 바퀴.",life:"반영구 — 연석 충격에 의한 변형 주의.",
+ sym:["특정 속도에서 스티어링 떨림 (휠 변형)","림 가장자리 크랙","공기압이 서서히 빠짐 (비드 부위 부식)"]},
+{s:"wheel",c:"W-03",ko:"TPMS 센서",en:"Tire Pressure Monitoring Sensor",sum:"타이어 공기압을 실시간으로 읽어 계기판에 알린다.",
+ easy:"타이어 바람이 빠졌는지 알려주는 센서입니다. 날이 추워지면 공기가 수축해서 경고등이 자주 뜹니다.",
+ role:"휠 안쪽 밸브에 붙은 직접식과, 휠 속도 차이로 추정하는 간접식이 있습니다. 공기압이 낮으면 연비와 제동거리가 나빠지고 고속에서 타이어가 파손될 위험이 커집니다.",
+ loc:"각 휠 밸브 안쪽 (직접식).",life:"내장 배터리 수명 5~7년.",
+ sym:["기온이 떨어지면 경고등이 자주 뜸","특정 휠만 값이 표시되지 않음","타이어 교체 후 센서 인식 불가"]},
+{s:"wheel",c:"W-04",ko:"휠 너트·허브 볼트",en:"Wheel Nut & Hub Bolt",sum:"휠을 허브에 고정하는 체결 부품. 규정 토크가 생명이다.",
+ easy:"바퀴를 붙잡아 두는 나사입니다. 덜 조이면 빠지고 너무 조여도 탈이 나서, 정해진 힘으로 조여야 합니다.",
+ role:"실제로는 볼트의 인장력으로 휠과 허브를 마찰로 붙잡는 구조입니다. 덜 조이면 풀려서 위험하고, 임팩트 렌치로 과하게 조이면 볼트가 늘어나거나 디스크가 변형됩니다.",
+ loc:"각 휠 4~5개소.",life:"반영구 — 규정 토크(대개 100~130N·m) 준수.",
+ sym:["주행 중 휠 부위에서 '딸깍딸깍' 소리","너트 주변 녹물 자국 (풀림 신호)","과토크로 인한 브레이크 디스크 떨림"]},
+{s:"wheel",c:"W-05",ko:"휠 얼라인먼트",en:"Wheel Alignment",sum:"바퀴가 향한 각도를 규정값에 맞추는 정렬 작업.",
+ easy:"네 바퀴가 똑바로 앞을 보고 있는지 맞추는 작업입니다. 조금만 틀어져도 타이어 한쪽만 급하게 닳고 핸들이 한쪽으로 쏠립니다.",
+ role:"토(toe)는 위에서 본 앞뒤 벌어짐, 캠버는 앞에서 본 기울기, 캐스터는 옆에서 본 조향축 경사입니다. 조금만 틀어져도 타이어가 한쪽만 급격히 닳고 직진 안정성이 떨어집니다.",
+ loc:"앞·뒤 서스펜션 전체.",life:"2만 km마다 또는 하체 부품 교체 후.",
+ sym:["핸들을 놓으면 한쪽으로 흐름","직진인데 핸들 중심이 틀어져 있음","타이어 안쪽 또는 바깥쪽만 닳음"]},
+{s:"wheel",c:"W-06",ko:"휠 밸런스 웨이트",en:"Balance Weight",sum:"휠과 타이어의 무게 불균형을 상쇄하는 작은 추.",
+ easy:"세탁기에 빨래가 한쪽으로 쏠리면 덜덜 떨리죠. 바퀴도 똑같아서, 무게를 맞추려고 작은 추를 붙여 둡니다.",
+ role:"몇 그램의 불균형도 고속에서는 큰 원심력이 되어 진동을 만듭니다. 타이어를 새로 끼우거나 웨이트가 떨어지면 반드시 다시 잡아야 합니다.",
+ loc:"휠 림 안쪽 또는 바깥쪽.",life:"타이어 교체 시마다 재조정.",
+ sym:["시속 80~110km 구간에서만 나는 진동","스티어링이 미세하게 떨림","웨이트가 붙었던 자리에 접착 자국만 남음"]},
+{s:"wheel",c:"W-07",ko:"스페어 타이어·수리 키트",en:"Spare Tire & Repair Kit",sum:"펑크 시 임시로 쓰는 예비 타이어 또는 실런트 키트.",
+ easy:"펑크 났을 때 임시로 쓰는 예비 바퀴나 때움 키트입니다. 정작 필요할 때 바람이 빠져 있는 경우가 많으니 가끔 확인해 두세요.",
+ role:"경량화를 위해 요즘은 좁은 템포러리 타이어나 실런트+컴프레서 키트로 대체하는 추세입니다. 템포러리는 속도와 거리 제한이 있으니 표기를 반드시 확인하세요.",
+ loc:"트렁크 바닥 아래.",life:"공기압은 6개월마다 점검, 실런트는 유효기간 있음.",
+ sym:["막상 쓰려니 공기압이 빠져 있음","실런트 유효기간 경과","TPMS 미장착으로 경고등 점등"]}
+];
+
+/* ---------- 렌더링 ---------- */
+const SYSMAP=Object.fromEntries(SYSTEMS.map(s=>[s.id,s]));
+const $=(s,r=document)=>r.querySelector(s);
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let filter="all", query="", easyMode=false;
+
+/* 단면도 핀 */
+$("#pins").innerHTML=SYSTEMS.map(s=>{
+  const p=s.pin, above=p.by<240, r=19;
+  const dx=p.ax-p.bx, dy=p.ay-p.by, len=Math.hypot(dx,dy);
+  const sx=p.bx+dx/len*r, sy=p.by+dy/len*r;
+  return `<g class="pin" data-sys="${s.id}" role="button" tabindex="0" aria-label="${s.ko} 계통 보기">
+    <line class="lead" x1="${sx.toFixed(1)}" y1="${sy.toFixed(1)}" x2="${p.ax}" y2="${p.ay}"/>
+    <circle class="dot" cx="${p.ax}" cy="${p.ay}" r="3.5"/>
+    <circle class="badge" cx="${p.bx}" cy="${p.by}" r="${r}"/>
+    <text class="num" x="${p.bx}" y="${p.by+5}">${s.no}</text>
+    <text class="lbl" x="${p.bx}" y="${above?p.by-30:p.by+38}">${s.ko}</text>
+  </g>`;
+}).join("");
+
+/* 필터 칩 */
+$("#chips").innerHTML=`<button class="chip is-on" data-sys="all">전체</button>`+
+  SYSTEMS.map(s=>`<button class="chip" data-sys="${s.id}">${s.no} ${s.ko}</button>`).join("");
+
+$("#stampCount").textContent=PARTS.length;
+
+function match(p){
+  if(filter!=="all"&&p.s!==filter)return false;
+  if(!query)return true;
+  const hay=(p.ko+" "+p.en+" "+p.sum+" "+p.easy+" "+p.role+" "+p.sym.join(" ")+" "+SYSMAP[p.s].ko).toLowerCase();
+  return query.toLowerCase().split(/\s+/).every(t=>hay.includes(t));
+}
+
+function render(){
+  const hits=PARTS.filter(match);
+  $("#n").textContent=hits.length;
+  if(!hits.length){
+    $("#catalog").innerHTML=`<div class="empty"><strong>일치하는 부품이 없습니다</strong>
+      다른 이름이나 증상으로 다시 찾아보세요. 예를 들어 "떨림", "누유", "소음"처럼 증상만 넣어도 검색됩니다.
+      <br><button id="reset">검색 조건 지우기</button></div>`;
+    $("#reset").onclick=()=>{query="";filter="all";$("#q").value="";syncChips();render();};
+    return;
+  }
+  $("#catalog").innerHTML=SYSTEMS.map(s=>{
+    const list=hits.filter(p=>p.s===s.id);
+    if(!list.length)return"";
+    return `<section class="sys" id="sec-${s.id}">
+      <div class="sys__head">
+        <div class="sys__no">${s.no}</div>
+        <div class="sys__txt">
+          <h2>${s.ko}<em>${s.en} · ${list.length}</em></h2>
+          <p>${s.desc}</p>
+        </div>
+      </div>
+      <div class="grid">${list.map(p=>`
+        <button class="card" data-code="${p.c}">
+          <span class="card__code">${p.c}</span>
+          <span class="card__ko">${esc(p.ko)}</span>
+          <span class="card__en">${esc(p.en)}</span>
+          <span class="card__sum">${esc(easyMode?p.easy:p.sum)}</span>
+        </button>`).join("")}</div>
+    </section>`;
+  }).join("");
+}
+
+function syncChips(){
+  document.querySelectorAll(".chip").forEach(c=>c.classList.toggle("is-on",c.dataset.sys===filter));
+  document.querySelectorAll(".pin").forEach(c=>c.classList.toggle("is-on",c.dataset.sys===filter));
+}
+
+/* 상세 서랍 */
+let lastFocus=null;
+function openPart(code){
+  const p=PARTS.find(x=>x.c===code); if(!p)return;
+  const s=SYSMAP[p.s]; lastFocus=document.activeElement;
+  $("#drawer").innerHTML=`
+    <div class="drawer__top">
+      <div><span class="drawer__code">${p.c}</span><span class="drawer__sys">${s.no} ${s.ko} / ${s.en}</span></div>
+      <button class="drawer__close" id="dClose" aria-label="닫기">✕</button>
+    </div>
+    <h3 id="dTitle">${esc(p.ko)}</h3>
+    <p class="en">${esc(p.en)}</p>
+    <div class="easy"><h4>쉽게 말하면</h4><p>${esc(p.easy)}</p></div>
+    <p class="deep-label">자세히</p>
+    <p class="role">${esc(p.role)}</p>
+    <dl>
+      <div class="spec"><dt>위치</dt><dd>${esc(p.loc)}</dd></div>
+      <div class="spec"><dt>교체 주기</dt><dd>${esc(p.life)}</dd></div>
+      <div class="spec"><dt>고장 신호</dt><dd><ul class="syms">${p.sym.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></dd></div>
+    </dl>`;
+  $("#drawer").classList.add("is-on"); $("#scrim").classList.add("is-on");
+  $("#dClose").onclick=closePart; $("#drawer").focus();
+}
+function closePart(){
+  $("#drawer").classList.remove("is-on"); $("#scrim").classList.remove("is-on");
+  if(lastFocus)lastFocus.focus();
+}
+
+/* 이벤트 */
+document.addEventListener("click",e=>{
+  const card=e.target.closest(".card"); if(card){openPart(card.dataset.code);return;}
+  const chip=e.target.closest(".chip"); if(chip){filter=chip.dataset.sys;syncChips();render();return;}
+  const pin=e.target.closest(".pin");
+  if(pin){
+    filter=filter===pin.dataset.sys?"all":pin.dataset.sys;
+    syncChips();render();
+    document.querySelector(".bar").scrollIntoView({block:"start"});
+    return;
+  }
+  if(e.target.id==="scrim")closePart();
+});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape")closePart();
+  if((e.key==="Enter"||e.key===" ")&&e.target.classList?.contains("pin")){e.preventDefault();e.target.click();}
+});
+$("#q").addEventListener("input",e=>{query=e.target.value.trim();render();});
+$("#easyBtn").addEventListener("click",()=>{
+  easyMode=!easyMode;
+  $("#easyBtn").setAttribute("aria-pressed",String(easyMode));
+  $("#easyBtn").lastChild.textContent=easyMode?"기술 용어로 보기":"쉬운 설명으로 보기";
+  document.body.classList.toggle("easy-on",easyMode);
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

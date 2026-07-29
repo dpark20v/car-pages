@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PORSCHE 911 — TYPE 992 | 기술과 계보</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=Saira+Condensed:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0E0F12;
+  --graphite:#191B20;
+  --line-dark:#2C2F36;
+  --steel:#787E8A;
+  --chalk:#EFEEE9;
+  --chalk-2:#E2E0D8;
+  --guards:#D5001C;
+  --patina:#93897A;
+  --max:1180px;
+  --pad:clamp(20px,5vw,64px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation:none!important;transition-duration:.01ms!important}
+}
+body{
+  background:var(--ink);
+  color:var(--chalk);
+  font-family:"IBM Plex Sans KR",system-ui,sans-serif;
+  font-weight:300;
+  line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--max);margin:0 auto;padding-left:var(--pad);padding-right:var(--pad)}
+
+/* ---------- shared type ---------- */
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:11px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--guards);
+}
+.eyebrow.muted{color:var(--steel)}
+h2.sec-title{
+  font-weight:700;font-size:clamp(26px,4.2vw,44px);line-height:1.2;
+  letter-spacing:-.02em;margin:14px 0 0;
+}
+.sec-lede{max-width:64ch;color:#AEB2BB;font-size:clamp(15px,1.6vw,17px);margin-top:18px}
+.num{font-family:"Saira Condensed",sans-serif;font-weight:900;letter-spacing:.01em}
+.mono{font-family:"IBM Plex Mono",monospace}
+
+/* ---------- hero ---------- */
+.hero{
+  position:relative;padding:clamp(48px,9vh,96px) 0 0;
+  border-bottom:1px solid var(--line-dark);
+  overflow:hidden;
+}
+.hero-top{display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap}
+.hero-top .mono{font-size:11px;letter-spacing:.2em;color:var(--steel);text-transform:uppercase}
+.bignum{
+  font-family:"Saira Condensed",sans-serif;font-weight:900;
+  font-size:clamp(112px,26vw,300px);line-height:.82;letter-spacing:-.02em;
+  margin:clamp(18px,4vw,34px) 0 0;
+  display:flex;align-items:flex-end;gap:clamp(12px,3vw,32px);flex-wrap:wrap;
+}
+.bignum small{
+  font-family:"IBM Plex Sans KR",sans-serif;font-weight:600;
+  font-size:clamp(14px,1.7vw,19px);line-height:1.5;letter-spacing:0;
+  color:#AEB2BB;max-width:22ch;padding-bottom:clamp(8px,1.6vw,20px);
+}
+.hero-lede{max-width:62ch;margin-top:26px;color:#B7BBC4;font-size:clamp(15px,1.7vw,18px)}
+.hero-lede b{color:var(--chalk);font-weight:600}
+
+.flyline{width:100%;height:auto;display:block;margin:clamp(24px,5vw,48px) 0 0;overflow:visible}
+.flyline .body{
+  fill:none;stroke:var(--chalk);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:1700;stroke-dashoffset:1700;
+  animation:draw 2.4s cubic-bezier(.6,.05,.2,1) .35s forwards;
+}
+.flyline .wheel{fill:none;stroke:var(--steel);stroke-width:1.4;opacity:0;animation:fade 1s ease 2.1s forwards}
+.flyline .ground{stroke:var(--line-dark);stroke-width:1;opacity:0;animation:fade 1s ease 2.3s forwards}
+.flyline .mark{fill:var(--guards);opacity:0;animation:fade .6s ease 2.6s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fade{to{opacity:1}}
+
+/* ---------- thesis ---------- */
+.thesis{padding:clamp(64px,10vw,120px) 0;border-bottom:1px solid var(--line-dark)}
+.thesis-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(24px,3vw,48px);margin-top:clamp(36px,5vw,56px)}
+.thesis-grid article{border-top:1px solid var(--line-dark);padding-top:20px}
+.thesis-grid h3{font-weight:600;font-size:17px;margin-bottom:10px}
+.thesis-grid p{color:#9DA2AC;font-size:15px}
+
+/* ---------- lineage (light register) ---------- */
+.lineage{background:var(--chalk);color:#14161A;padding:clamp(64px,10vw,120px) 0}
+.lineage .eyebrow.muted{color:var(--patina)}
+.lineage .sec-lede{color:#4E5259}
+.dialwrap{
+  display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);
+  gap:clamp(32px,5vw,64px);align-items:start;margin-top:clamp(40px,6vw,64px);
+}
+.dial{width:100%;height:auto;display:block;touch-action:manipulation}
+.dial .face{fill:#14161A}
+.dial .bezel{fill:none;stroke:#C9C6BD;stroke-width:1}
+.dial .tick{stroke:#6F757F;stroke-width:1.6}
+.dial .tick.on{stroke:var(--chalk);stroke-width:2.6}
+.dial .tick.red{stroke:var(--guards)}
+.dial .redarc{fill:none;stroke:var(--guards);stroke-width:5;stroke-linecap:round}
+.dial .lbl{
+  font-family:"IBM Plex Mono",monospace;font-size:14px;font-weight:500;
+  fill:#8A8F98;text-anchor:middle;dominant-baseline:middle;
+}
+.dial .lbl.on{fill:var(--chalk);font-weight:600}
+.dial g.pick{cursor:pointer}
+.dial g.pick:focus{outline:none}
+.dial g.pick:focus-visible circle.hit{stroke:var(--guards);stroke-width:2;fill:rgba(213,0,28,.14)}
+.dial .hit{fill:transparent}
+.dial .needle{
+  stroke:var(--guards);stroke-width:3.5;stroke-linecap:round;
+  transition:transform .85s cubic-bezier(.16,1.04,.3,1);transform-origin:210px 210px;
+}
+.dial .cap{fill:#0E0F12;stroke:#3A3E46;stroke-width:1}
+.dial .readout{font-family:"Saira Condensed",sans-serif;font-weight:900;font-size:52px;fill:var(--chalk);text-anchor:middle}
+.dial .readsub{font-family:"IBM Plex Mono",monospace;font-size:13px;fill:#8A8F98;text-anchor:middle;letter-spacing:.1em}
+
+.dial-nav{display:flex;gap:10px;margin-top:18px;align-items:center}
+.dial-nav button{
+  font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.1em;
+  background:transparent;border:1px solid #C9C6BD;color:#14161A;
+  padding:9px 16px;cursor:pointer;transition:background .2s,border-color .2s;
+}
+.dial-nav button:hover{background:#14161A;color:var(--chalk);border-color:#14161A}
+.dial-nav button:focus-visible{outline:2px solid var(--guards);outline-offset:2px}
+.dial-hint{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--patina);letter-spacing:.08em;margin-left:auto}
+
+.gen-detail h3{font-weight:700;font-size:clamp(22px,3.2vw,32px);letter-spacing:-.01em;line-height:1.25}
+.gen-detail .gen-years{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--guards);letter-spacing:.14em;margin-bottom:8px}
+.gen-detail .gen-body{margin-top:16px;color:#3E4249;font-size:16px;max-width:60ch}
+.gen-detail ul{list-style:none;margin-top:26px;border-top:1px solid #D3D0C7}
+.gen-detail li{
+  border-bottom:1px solid #D3D0C7;padding:14px 0 14px 0;
+  display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:baseline;
+}
+.gen-detail li span{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+  color:var(--patina);text-transform:uppercase;
+}
+.gen-detail li p{font-size:15px;color:#26292E}
+.fading{opacity:0;transform:translateY(6px);transition:opacity .18s ease,transform .18s ease}
+.gen-detail{transition:opacity .28s ease,transform .28s ease}
+
+/* ---------- tech ---------- */
+.tech{padding:clamp(64px,10vw,120px) 0;border-bottom:1px solid var(--line-dark)}
+.flow{margin-top:clamp(40px,6vw,60px);border-top:1px solid var(--line-dark)}
+.flow-step{
+  display:grid;grid-template-columns:72px 1fr;gap:clamp(16px,3vw,40px);
+  border-bottom:1px solid var(--line-dark);padding:26px 0;align-items:start;
+}
+.flow-step .idx{font-family:"Saira Condensed",sans-serif;font-weight:900;font-size:34px;color:var(--guards);line-height:1}
+.flow-step h4{font-weight:600;font-size:17px;margin-bottom:8px}
+.flow-step p{color:#9DA2AC;font-size:15px;max-width:66ch}
+.flow-step p em{color:var(--chalk);font-style:normal;font-weight:500}
+
+.modules{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line-dark);margin-top:clamp(48px,7vw,72px);border:1px solid var(--line-dark)}
+.mod{background:var(--graphite);padding:clamp(24px,3.2vw,36px)}
+.mod .eyebrow{margin-bottom:12px}
+.mod h4{font-weight:600;font-size:19px;margin-bottom:12px}
+.mod p{color:#9DA2AC;font-size:15px}
+.mod dl{margin-top:18px}
+.mod dt{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.13em;color:var(--steel);text-transform:uppercase;margin-top:14px}
+.mod dd{font-size:15px;color:#C7CBD2}
+
+/* ---------- delta ---------- */
+.delta{background:var(--chalk);color:#14161A;padding:clamp(64px,10vw,120px) 0}
+.delta .eyebrow.muted{color:var(--patina)}
+.delta .sec-lede{color:#4E5259}
+.delta-list{margin-top:clamp(36px,5vw,56px);border-top:1px solid #D3D0C7}
+.delta-row{
+  display:grid;grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr);
+  gap:clamp(12px,2vw,28px);border-bottom:1px solid #D3D0C7;padding:22px 0;align-items:center;
+}
+.delta-row .was{color:#7B8089;font-size:15px}
+.delta-row .arrow{color:var(--guards);font-family:"IBM Plex Mono",monospace;font-size:15px;text-align:center}
+.delta-row .now{font-size:15px;font-weight:500;color:#14161A}
+.delta-head{
+  display:grid;grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr);
+  gap:clamp(12px,2vw,28px);padding-bottom:10px;
+}
+.delta-head span{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;color:var(--patina);text-transform:uppercase}
+
+/* ---------- specs ---------- */
+.specs{padding:clamp(64px,10vw,120px) 0}
+.tablewrap{margin-top:clamp(36px,5vw,56px);overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:660px}
+th,td{text-align:left;padding:15px 14px;border-bottom:1px solid var(--line-dark);font-size:15px}
+thead th{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.16em;
+  color:var(--steel);text-transform:uppercase;font-weight:500;border-bottom-color:var(--steel);
+}
+tbody th{font-weight:600;color:var(--chalk);font-size:15.5px}
+td{color:#A9AEB7}
+td.hp{font-family:"Saira Condensed",sans-serif;font-weight:700;font-size:20px;color:var(--chalk)}
+tbody tr:hover td,tbody tr:hover th{background:rgba(255,255,255,.028)}
+tr.flagship th{color:var(--guards)}
+.note{margin-top:20px;font-size:13px;color:var(--steel);max-width:70ch}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line-dark);padding:44px 0 60px;color:var(--steel);font-size:13px}
+footer p{max-width:70ch}
+footer .mono{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#4A4F58;margin-bottom:14px}
+
+/* ---------- responsive ---------- */
+@media (max-width:900px){
+  .dialwrap{grid-template-columns:1fr}
+  .modules{grid-template-columns:1fr}
+  .thesis-grid{grid-template-columns:1fr;gap:26px}
+  .delta-row,.delta-head{grid-template-columns:1fr;gap:4px}
+  .delta-row .arrow{text-align:left}
+  .delta-head span:nth-child(2){display:none}
+  .gen-detail li{grid-template-columns:1fr;gap:4px}
+  .flow-step{grid-template-columns:44px 1fr}
+  .flow-step .idx{font-size:26px}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-top">
+      <p class="eyebrow">Porsche 911 · Interner Typ 992</p>
+      <p class="mono">1963 → 현재 · 8세대</p>
+    </div>
+
+    <h1 class="bignum">992<small>공랭 플랫식스에서 전기 터보차저까지, 같은 자리에 엔진을 둔 채로 60년.</small></h1>
+
+    <p class="hero-lede">911은 한 번도 엔진을 옮기지 않았다. 뒷차축 <b>뒤에</b> 수평대향 6기통을 올려두는, 공학적으로는 불리한 배치를 60년 동안 고수했다. 992 세대의 기술 대부분은 결국 그 하나의 고집을 성립시키기 위한 장치다. 이 페이지는 지금의 992가 무엇으로 만들어졌는지, 그리고 그 앞의 일곱 세대가 무엇을 남겼는지를 정리한다.</p>
+
+    <svg class="flyline" viewBox="0 0 800 230" role="img" aria-label="포르쉐 911의 측면 실루엣 라인">
+      <line class="ground" x1="10" y1="214" x2="790" y2="214"/>
+      <circle class="wheel" cx="152" cy="176" r="38"/>
+      <circle class="wheel" cx="608" cy="176" r="42"/>
+      <path class="body" d="M28,172 C34,146 50,131 86,127 C132,120 178,117 216,119 C242,120 256,95 292,72 C332,57 382,54 428,60 C520,72 602,106 662,141 C692,154 707,161 716,173"/>
+      <path class="body" d="M662,141 C676,133 692,132 706,138"/>
+      <rect class="mark" x="28" y="188" width="34" height="3"/>
+    </svg>
+  </div>
+</header>
+
+<!-- ============ THESIS ============ -->
+<section class="thesis">
+  <div class="wrap">
+    <p class="eyebrow muted">The Layout</p>
+    <h2 class="sec-title">왜 하필 뒤에 두는가</h2>
+    <p class="sec-lede">리어 엔진은 관성 모멘트가 크고, 한계에서 뒤가 먼저 나가려 한다. 그럼에도 포르쉐가 이 배치를 버리지 않은 이유는 보상 가능한 단점 하나를 얻는 대가로, 보상 불가능한 장점 두 개를 가져오기 때문이다.</p>
+
+    <div class="thesis-grid">
+      <article>
+        <h3>구동륜 위의 하중</h3>
+        <p>가속할 때 하중은 뒤로 쏠린다. 엔진이 이미 뒤에 있으니 리어 타이어의 접지력이 두 배로 확보된다. 후륜구동 911이 같은 출력의 경쟁차보다 늘 발진이 빠른 이유다.</p>
+      </article>
+      <article>
+        <h3>제동에서의 균형</h3>
+        <p>브레이킹에서는 반대로 앞으로 하중이 이동해, 무거운 뒤와 상쇄되며 네 바퀴가 고르게 일한다. 결과적으로 제동 거리에서 유리하다.</p>
+      </article>
+      <article>
+        <h3>비어 있는 앞머리</h3>
+        <p>보닛 아래에 엔진이 없으니 노즈를 낮게 깎을 수 있다. 60년째 유지되는 그 낮은 앞머리와 뒤로 흘러내리는 지붕선(플라이라인)은 스타일이 아니라 패키징의 결과다.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LINEAGE ============ -->
+<section class="lineage" id="lineage">
+  <div class="wrap">
+    <p class="eyebrow muted">Generationen</p>
+    <h2 class="sec-title">여덟 개의 타입 번호</h2>
+    <p class="sec-lede">911의 세대는 이름이 아니라 내부 개발 번호로 불린다. 회전계의 눈금을 돌리듯 눈금을 골라보면 해당 세대가 남긴 것을 볼 수 있다. 레드존은 현행 992다.</p>
+
+    <div class="dialwrap">
+      <div>
+        <svg class="dial" viewBox="0 0 420 470" role="group" aria-label="세대 선택 다이얼">
+          <circle class="face" cx="210" cy="210" r="196"/>
+          <circle class="bezel" cx="210" cy="210" r="196"/>
+          <circle class="bezel" cx="210" cy="210" r="178" opacity=".35"/>
+          <path class="redarc" id="redarc" d=""/>
+          <g id="ticks"></g>
+          <text class="readout" id="readCode" x="210" y="152">992</text>
+          <text class="readsub" id="readYears" x="210" y="178">2018 —</text>
+          <line class="needle" id="needle" x1="210" y1="210" x2="210" y2="62"/>
+          <circle class="cap" cx="210" cy="210" r="13"/>
+          <text class="readsub" x="210" y="268" opacity=".55">GENERATION</text>
+          <text class="readsub" id="readIdx" x="210" y="292">8 / 8</text>
+        </svg>
+
+        <div class="dial-nav">
+          <button type="button" id="prev" aria-label="이전 세대">← 이전</button>
+          <button type="button" id="next" aria-label="다음 세대">다음 →</button>
+          <span class="dial-hint">눈금 클릭 · ← → 키</span>
+        </div>
+      </div>
+
+      <div class="gen-detail" id="detail" aria-live="polite">
+        <!-- injected -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TECH ============ -->
+<section class="tech" id="tech">
+  <div class="wrap">
+    <p class="eyebrow">T-Hybrid</p>
+    <h2 class="sec-title">992가 하이브리드를 쓰는 방식</h2>
+    <p class="sec-lede">2024년 5월 공개된 992.2 카레라 GTS는 양산 911 최초의 하이브리드다. 다만 목적이 연비가 아니다. 전기 모터로만 달리는 구간은 존재하지 않고, 엔진은 항상 돌아간다. 배터리는 에너지를 <em style="font-style:normal;color:#fff">저장</em>하기 위해서가 아니라 <em style="font-style:normal;color:#fff">즉시 쏟아내기</em> 위해 설계됐다. 순서대로 보면 이렇게 작동한다.</p>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="idx">01</div>
+        <div>
+          <h4>배기가스가 터빈을 돌린다</h4>
+          <p>여기까지는 평범한 터보차저다. 3.6리터 수평대향 6기통(코드명 9A3)의 배기가 터빈 휠을 밀어 회전시킨다.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="idx">02</div>
+        <div>
+          <h4>남는 에너지를 전기로 회수한다</h4>
+          <p>터빈 휠과 컴프레서 휠 <em>사이</em>에 전기 모터가 끼워져 있다. 이것이 eTurbo, 즉 전기 배기가스 터보차저다. 배기 에너지가 남을 때 이 모터는 발전기가 되어 최대 11kW를 400V 배터리로 보낸다. 과급압을 버리던 웨이스트게이트가 필요 없어진다.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="idx">03</div>
+        <div>
+          <h4>부족할 때는 같은 모터가 컴프레서를 직접 돌린다</h4>
+          <p>저회전에서 배기가 모자라면 모터(약 27마력)가 축을 직접 구동해 과급압을 만든다. <em>터보 래그가 원리적으로 사라진다.</em> 이 덕분에 배기량을 3.0에서 3.6리터로 키우면서도 응답을 자연흡기처럼 유지할 수 있었다.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="idx">04</div>
+        <div>
+          <h4>PDK 안의 모터가 빈틈을 메운다</h4>
+          <p>8단 PDK 변속기 내부에도 영구자석 동기 모터가 들어간다. 약 54마력, 150Nm을 즉시 더해 발진과 변속 순간의 토크 공백을 채운다. 이 모터는 시동 모터와 발전기 역할까지 겸한다.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="modules">
+      <div class="mod">
+        <p class="eyebrow muted">Energiespeicher</p>
+        <h4>400V · 1.9kWh</h4>
+        <p>프런트 트렁크에 실린 리튬이온 배터리는 플러그를 꽂을 수 없다. 회생 제동으로만 충전되며, 용량보다 순간 출력에 맞춰 설계됐다. 에어컨 컴프레서까지 400V 전동식으로 바꾸면서 엔진의 벨트 구동계를 통째로 없앴고, 그 덕에 하이브리드 부품이 늘린 무게 중 약 18kg을 되돌려 받았다.</p>
+        <dl>
+          <dt>시스템 출력 · GTS</dt><dd>541마력 / 610Nm</dd>
+          <dt>시스템 출력 · Turbo S</dt><dd>711PS / 800Nm — 역대 최강 양산 911</dd>
+          <dt>전기 주행</dt><dd>불가 (성능형 하이브리드)</dd>
+        </dl>
+      </div>
+
+      <div class="mod">
+        <p class="eyebrow muted">Fahrwerk</p>
+        <h4>섀시가 리어 엔진을 다스리는 법</h4>
+        <p>뒤가 무거운 차를 안정시키는 일은 992에서 대부분 전자장비가 맡는다. 다만 최종 해법은 여전히 기계적이다 — 앞뒤 타이어 크기를 다르게 쓴다.</p>
+        <dl>
+          <dt>혼합 휠</dt><dd>프런트 20인치 / 리어 21인치. 뒤쪽 하중에 맞춰 접지면을 키운 조합이며 992에서 전 라인업 표준이 됐다.</dd>
+          <dt>후륜 조향</dt><dd>저속에서는 뒷바퀴를 앞바퀴와 반대로 꺾어 회전 반경을 줄이고, 고속에서는 같은 방향으로 꺾어 차선 변경을 안정시킨다. 992.2 GTS부터 기본.</dd>
+          <dt>PDCC</dt><dd>전기유압식 액티브 안티롤바. 코너에서 롤을 능동적으로 억제한다.</dd>
+          <dt>PASM · PTV Plus</dt><dd>가변 댐퍼와 전자 제어 차동제한장치.</dd>
+        </dl>
+      </div>
+
+      <div class="mod">
+        <p class="eyebrow muted">Wet Modus</p>
+        <h4>물소리를 듣는 차</h4>
+        <p>휠하우스 안쪽에 음향 센서가 붙어 있다. 타이어가 젖은 노면에서 튀기는 물소리를 감지하면 계기판이 운전자에게 웨트 모드를 권한다. 모드를 켜면 스로틀 응답, 안정성 제어, 리어 스포일러 각도, 쿨링 플랩이 한꺼번에 젖은 노면용 설정으로 바뀐다. 992에서 처음 도입됐고, 리어 엔진 특유의 오버스티어 위험을 겨냥한 장치다.</p>
+      </div>
+
+      <div class="mod">
+        <p class="eyebrow muted">Motorenauswahl</p>
+        <h4>세 종류의 플랫식스</h4>
+        <p>992 세대는 한 엔진을 돌려 쓰지 않는다. 성격이 다른 세 계보가 동시에 팔린다.</p>
+        <dl>
+          <dt>3.0L 트윈터보</dt><dd>카레라 / 카레라 S / 4S. 394~473마력. 992.2에서 터보·GTS 유래 인터쿨러를 받아 출력이 올랐다.</dd>
+          <dt>3.6L T-Hybrid</dt><dd>GTS와 Turbo S. GT3식 핑거 팔로워 밸브트레인을 써서 헤드를 낮췄다.</dd>
+          <dt>4.0L 자연흡기</dt><dd>GT3 전용. 9,000rpm, 502마력. 992.2에서도 6단 수동을 남겼고, 911 양산차 최초로 프런트 더블 위시본을 얹었다.</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DELTA ============ -->
+<section class="delta" id="delta">
+  <div class="wrap">
+    <p class="eyebrow muted">Facelift · 2024 →</p>
+    <h2 class="sec-title">992.1에서 992.2로</h2>
+    <p class="sec-lede">2024년 5월 28일 공개된 부분변경은 겉모습보다 실내와 파워트레인의 변화가 크다. 특히 1963년부터 이어진 중앙 아날로그 회전계가 사라진 것이 상징적이다.</p>
+
+    <div class="delta-list">
+      <div class="delta-head"><span>992.1 (2018–2024)</span><span></span><span>992.2 (2024– )</span></div>
+
+      <div class="delta-row">
+        <div class="was">중앙 아날로그 회전계 + 좌우 디지털</div><div class="arrow">→</div>
+        <div class="now">12.6인치 곡면 풀 디지털 계기판 — 60년 만에 아날로그 바늘이 사라졌다</div>
+      </div>
+      <div class="delta-row">
+        <div class="was">왼쪽 트위스트 키 스위치</div><div class="arrow">→</div>
+        <div class="now">시동 버튼</div>
+      </div>
+      <div class="delta-row">
+        <div class="was">카레라 GTS 3.0L 트윈터보</div><div class="arrow">→</div>
+        <div class="now">카레라 GTS 3.6L T-Hybrid, 541마력 · 후륜 조향 기본</div>
+      </div>
+      <div class="delta-row">
+        <div class="was">기본형 카레라 385마력</div><div class="arrow">→</div>
+        <div class="now">394마력 — 터보/GTS 유래 인터쿨러와 터보차저 적용</div>
+      </div>
+      <div class="delta-row">
+        <div class="was">Turbo S 3.7L 트윈터보 650PS</div><div class="arrow">→</div>
+        <div class="now">3.6L 트윈 eTurbo T-Hybrid 711PS, 0–100km/h 2.5초 (2025년 9월 IAA 공개)</div>
+      </div>
+      <div class="delta-row">
+        <div class="was">헤드램프 · 인포테인먼트 구세대</div><div class="arrow">→</div>
+        <div class="now">매트릭스 디자인 LED 기본, 앱 설치형 인포테인먼트, Dolby Atmos 오디오</div>
+      </div>
+      <div class="delta-row">
+        <div class="was">4S 라인 일시 공백</div><div class="arrow">→</div>
+        <div class="now">2026년형에서 카레라 4S · 타르가 4S 부활 (473마력)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SPECS ============ -->
+<section class="specs" id="specs">
+  <div class="wrap">
+    <p class="eyebrow">Technische Daten</p>
+    <h2 class="sec-title">992.2 주요 모델</h2>
+
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th scope="col">모델</th><th scope="col">엔진</th><th scope="col">출력</th><th scope="col">0–100km/h</th><th scope="col">변속기</th><th scope="col">구동</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Carrera</th><td>3.0L 트윈터보</td><td class="hp">394</td><td>약 4.1초</td><td>8단 PDK</td><td>RWD</td></tr>
+          <tr><th scope="row">Carrera T</th><td>3.0L 트윈터보</td><td class="hp">394</td><td>약 4.5초</td><td>6단 수동 / PDK</td><td>RWD</td></tr>
+          <tr><th scope="row">Carrera S / 4S</th><td>3.0L 트윈터보</td><td class="hp">473</td><td>약 3.3 / 3.1초</td><td>8단 PDK</td><td>RWD / AWD</td></tr>
+          <tr><th scope="row">Carrera GTS T-Hybrid</th><td>3.6L T-Hybrid</td><td class="hp">541</td><td>약 3.0초</td><td>8단 PDK</td><td>RWD / AWD</td></tr>
+          <tr><th scope="row">GT3 / GT3 Touring</th><td>4.0L 자연흡기</td><td class="hp">502</td><td>약 3.4초</td><td>6단 수동 / 7단 PDK</td><td>RWD</td></tr>
+          <tr class="flagship"><th scope="row">Turbo S T-Hybrid</th><td>3.6L 트윈 eTurbo T-Hybrid</td><td class="hp">711<span style="font-size:12px;font-family:'IBM Plex Mono';color:#787E8A"> PS</span></td><td>약 2.5초</td><td>8단 PDK</td><td>AWD</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">출력은 각 시장 공식 발표 기준이며 PS와 hp 표기가 혼용된다. 0–100km/h 기록은 스포츠 크로노 패키지 장착 기준이다. 트림 구성과 수치는 시장·연식별로 달라질 수 있다.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p class="mono">Stand: 2026 · 자료 기준</p>
+    <p>2026년 7월 시점의 공개 정보를 기준으로 정리했습니다. 992.2 라인업은 카레라 4S·타르가 4S 추가, Turbo S T-Hybrid 투입 등으로 계속 확장되는 중이므로 최신 사양은 포르쉐 공식 발표를 확인하시기 바랍니다. 이 문서는 포르쉐와 무관한 개인 참고용 정리입니다.</p>
+  </div>
+</footer>
+
+<script>
+const GENS = [
+  {
+    code:"901", name:"오리지널 · F 시리즈", years:"1963 – 1973",
+    body:"1963년 프랑크푸르트 모터쇼에 '901'로 등장했다. 푸조가 가운데 0이 들어간 세 자리 숫자에 대한 권리를 주장하면서 이름을 911로 바꿨을 뿐, 차는 그대로였다. 페르디난트 알렉산더 포르쉐가 그린 실루엣과 뒷차축 뒤의 공랭 플랫식스라는 두 가지 결정이 이때 확정됐고, 이후 60년 동안 아무도 그것을 되돌리지 않았다.",
+    facts:[
+      ["엔진","2.0L 공랭 수평대향 6기통 SOHC, 130마력"],
+      ["결정적 순간","1972년 카레라 RS 2.7 — 덕테일 스포일러로 리어 리프트를 잡은 첫 시도"],
+      ["남긴 것","실루엣, 5개 원형 계기, 리어 엔진 레이아웃"]
+    ]
+  },
+  {
+    code:"G", name:"G 시리즈 · 930 터보의 시대", years:"1973 – 1989",
+    body:"미국의 충돌 안전 규제에 대응하느라 주름진 벨로우즈 범퍼를 달았고, 그 모습이 오히려 한 시대의 얼굴이 됐다. 1974년 등장한 930 터보는 항공기용에 가깝던 터보차저를 도로용 스포츠카에 얹은 사건이었다. 부스트가 갑자기 터지는 특성 때문에 '과부 제조기'라는 별명이 붙었지만, 동시에 911을 슈퍼카의 영역으로 밀어 올렸다.",
+    facts:[
+      ["엔진","2.7 → 3.2L 공랭 플랫식스 / 930 터보 3.0 → 3.3L"],
+      ["결정적 순간","1974년 930 터보 — 911 최초의 과급 엔진"],
+      ["남긴 것","와이드 리어 펜더, 웨일테일 스포일러, 카브리올레 바디"]
+    ]
+  },
+  {
+    code:"964", name:"현대화의 첫 걸음", years:"1988 – 1994",
+    body:"포르쉐는 964를 두고 부품의 85%가 새것이라고 했다. 겉은 여전히 클래식 911이지만 속은 완전히 다른 차였다. 토션바를 버리고 코일 스프링을 넣었고, ABS와 파워스티어링이 들어왔으며, 속도에 따라 자동으로 올라오는 리어 스포일러가 처음 달렸다. 그리고 결정적으로, 상시 사륜구동 카레라 4가 여기서 시작됐다.",
+    facts:[
+      ["엔진","3.6L 공랭 플랫식스, 250마력"],
+      ["결정적 순간","카레라 4 — 959의 사륜구동 기술을 양산 911로"],
+      ["남긴 것","코일 스프링 서스펜션, 가변 리어 스포일러, AWD 라인"]
+    ]
+  },
+  {
+    code:"993", name:"마지막 공랭", years:"1993 – 1998",
+    body:"많은 사람이 911 디자인의 정점으로 꼽는 세대이자, 공기로 엔진을 식히는 마지막 911이다. 리어 서스펜션을 멀티링크로 바꾸면서 리어 엔진 차의 고질적인 거동을 크게 다듬었고, 993 터보는 911 최초로 트윈터보를 얹어 래그를 줄였다. 배기 규제와 냉각 한계 앞에서 공랭은 여기까지가 끝이었다.",
+    facts:[
+      ["엔진","3.6L 공랭 플랫식스, 272 → 285마력 (Varioram)"],
+      ["결정적 순간","993 터보 — 911 최초의 트윈터보 + 상시 AWD"],
+      ["남긴 것","멀티링크 리어 서스펜션, 낮게 눕힌 헤드램프"]
+    ]
+  },
+  {
+    code:"996", name:"수랭으로 넘어가다", years:"1997 – 2005",
+    body:"911 역사상 가장 논쟁적인 세대다. 배기·소음 규제와 4밸브 헤드 도입을 위해 수랭식으로 전환했고, 원가를 낮추려 박스터와 앞부분을 공유하면서 눈물방울 모양 헤드램프를 달았다. 팬들의 반발은 컸지만 판매는 폭발적이었고, 그때 벌어들인 돈이 오늘의 포르쉐를 만들었다. GT3와 GT2가 시판 라인업으로 자리 잡은 것도 이 세대다.",
+    facts:[
+      ["엔진","3.4 → 3.6L 수랭 플랫식스"],
+      ["결정적 순간","수랭 전환 — 이후 모든 911의 전제가 됐다"],
+      ["남긴 것","GT3 계보(메자 엔진), 상업적 성공, 현대적 실내"]
+    ]
+  },
+  {
+    code:"997", name:"되돌린 얼굴, 새로운 속", years:"2004 – 2012",
+    body:"996이 잃었던 원형 헤드램프를 되찾아 오면서 디자인 논쟁을 정리했다. 진짜 변화는 2008년 부분변경에서 왔다. 직분사(DFI)와 듀얼 클러치 변속기 PDK가 동시에 들어오면서, 이후 911의 파워트레인 문법이 여기서 완성됐다. 티프트로닉 자동변속기는 이 시점에 역사 속으로 사라진다.",
+    facts:[
+      ["엔진","3.6 / 3.8L 수랭 플랫식스, 2008년부터 직분사"],
+      ["결정적 순간","PDK 도입 — 수동보다 빠른 변속이 표준이 되다"],
+      ["남긴 것","현재까지 이어지는 헤드램프 형상, PDK, GT3 RS 4.0"]
+    ]
+  },
+  {
+    code:"991", name:"커지고, 터보차저를 달다", years:"2011 – 2019",
+    body:"휠베이스를 100mm 늘리고 알루미늄-스틸 하이브리드 바디를 쓰면서 차체가 확실히 커졌다. 대신 리어 엔진의 약점인 거동 불안은 크게 줄었다. 2015년의 991.2는 더 큰 사건이었다 — GT 라인을 제외한 카레라 전 라인업이 자연흡기를 버리고 터보차저를 달았다. '터보'가 특별한 이름이 아니게 된 순간이다.",
+    facts:[
+      ["엔진","3.4 / 3.8L 자연흡기 → 991.2에서 3.0L 트윈터보"],
+      ["결정적 순간","991.2 — 카레라 전 라인 다운사이징 터보화"],
+      ["남긴 것","전자식 후륜 조향, 7단 수동, 991 GT2 RS 700마력"]
+    ]
+  },
+  {
+    code:"992", name:"현행 · 전동화의 문턱", years:"2018 – 현재",
+    body:"모든 모델이 와이드 바디가 됐고, 앞 20인치·뒤 21인치 혼합 휠이 표준이 됐다. 젖은 노면을 소리로 감지하는 웨트 모드가 처음 들어왔다. 2024년의 부분변경(992.2)에서 카레라 GTS가 T-Hybrid를 받아 양산 911 최초의 하이브리드가 됐고, 2025년에는 Turbo S까지 이 시스템을 쓰면서 711PS로 역대 최강 911이 나왔다. 다만 전기 모터는 여전히 연비가 아니라 응답을 위한 장치다.",
+    facts:[
+      ["엔진","3.0L 트윈터보 / 3.6L T-Hybrid / 4.0L 자연흡기(GT3)"],
+      ["결정적 순간","2024년 5월 28일 — 992.2 카레라 GTS T-Hybrid 공개"],
+      ["남긴 것","진행 중. eTurbo, 웨트 모드, 풀 디지털 계기판"]
+    ]
+  }
+];
+
+const N = GENS.length;
+const CX = 210, CY = 210;
+const A0 = -122, A1 = 122;                 // 다이얼 스윕 각도
+const step = (A1 - A0) / (N - 1);
+const rad = d => (d - 90) * Math.PI / 180;
+const pt = (a, r) => [CX + r * Math.cos(rad(a)), CY + r * Math.sin(rad(a))];
+
+let idx = N - 1;
+
+// 레드존 아크 (마지막 세대 구간)
+(function drawRedArc(){
+  const s = A0 + step * (N - 1.5), e = A1 + 8;
+  const [x1,y1] = pt(s, 168), [x2,y2] = pt(e, 168);
+  document.getElementById('redarc')
+    .setAttribute('d', `M${x1.toFixed(1)},${y1.toFixed(1)} A168,168 0 0 1 ${x2.toFixed(1)},${y2.toFixed(1)}`);
+})();
+
+// 눈금 생성
+const ticksG = document.getElementById('ticks');
+GENS.forEach((g, i) => {
+  const a = A0 + step * i;
+  const [x1,y1] = pt(a, 142), [x2,y2] = pt(a, 166);
+  const [lx,ly] = pt(a, 118), [hx,hy] = pt(a, 130);
+
+  const grp = document.createElementNS('http://www.w3.org/2000/svg','g');
+  grp.setAttribute('class','pick');
+  grp.setAttribute('tabindex','0');
+  grp.setAttribute('role','button');
+  grp.setAttribute('aria-label', `${g.code} 세대, ${g.years}`);
+  grp.dataset.i = i;
+
+  grp.innerHTML =
+    `<line class="tick${i===N-1?' red':''}" data-tick="${i}" x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"/>` +
+    `<text class="lbl" data-lbl="${i}" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}">${g.code}</text>` +
+    `<circle class="hit" cx="${hx.toFixed(1)}" cy="${hy.toFixed(1)}" r="26"/>`;
+
+  grp.addEventListener('click', () => select(i));
+  grp.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(i); }
+  });
+  ticksG.appendChild(grp);
+});
+
+const needle   = document.getElementById('needle');
+const readCode = document.getElementById('readCode');
+const readYear = document.getElementById('readYears');
+const readIdx  = document.getElementById('readIdx');
+const detail   = document.getElementById('detail');
+
+function select(i){
+  idx = (i + N) % N;
+  const g = GENS[idx];
+
+  needle.style.transform = `rotate(${A0 + step * idx}deg)`;
+  readCode.textContent = g.code;
+  readYear.textContent = g.years;
+  readIdx.textContent  = `${idx + 1} / ${N}`;
+
+  ticksG.querySelectorAll('[data-tick]').forEach(el => el.classList.toggle('on', +el.dataset.tick === idx));
+  ticksG.querySelectorAll('[data-lbl]').forEach(el => el.classList.toggle('on', +el.dataset.lbl === idx));
+
+  detail.classList.add('fading');
+  setTimeout(() => {
+    detail.innerHTML =
+      `<p class="gen-years mono">TYP ${g.code} · ${g.years}</p>` +
+      `<h3>${g.name}</h3>` +
+      `<p class="gen-body">${g.body}</p>` +
+      `<ul>` + g.facts.map(f => `<li><span>${f[0]}</span><p>${f[1]}</p></li>`).join('') + `</ul>`;
+    detail.classList.remove('fading');
+  }, 180);
+}
+
+document.getElementById('prev').addEventListener('click', () => select(idx - 1));
+document.getElementById('next').addEventListener('click', () => select(idx + 1));
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input,textarea')) return;
+  if (e.key === 'ArrowLeft')  select(idx - 1);
+  if (e.key === 'ArrowRight') select(idx + 1);
+});
+
+select(N - 1);
+</script>
+</body>
+</html>
