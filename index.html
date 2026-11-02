@@ -145,6 +145,13 @@
     aside.open { transform: none; box-shadow: 0 0 40px rgba(0,0,0,0.6); }
     #menuBtn { display: block; }
   }
+
+  [hidden] { display: none !important; }
+  .mic { background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; font-size: 1.1rem; }
+  .mic.on { background: var(--danger); border-color: var(--danger); animation: pulse 1.4s ease-in-out infinite; }
+  @keyframes pulse { 50% { box-shadow: 0 0 0 6px rgba(255,107,107,0.25); } }
+  .vstatus { max-width: 780px; margin: 0 auto 8px; color: var(--accent); font-size: 0.9rem; }
+  @media (prefers-reduced-motion: reduce) { .mic.on { animation: none; } }
 </style>
 </head>
 <body>
@@ -177,8 +184,10 @@
     <div id="messages"><div class="inner" id="messagesInner"></div></div>
 
     <div id="composer">
+      <div id="voiceStatus" class="vstatus" hidden></div>
       <form id="form">
         <textarea id="input" rows="1" placeholder="Jarvis에게 메시지 보내기…"></textarea>
+        <button id="micBtn" class="mic" type="button" title="음성 대화" aria-label="음성 대화">🎤</button>
         <button id="sendBtn" type="submit">보내기</button>
       </form>
     </div>
@@ -207,7 +216,7 @@
 import Anthropic from "https://cdn.jsdelivr.net/npm/@anthropic-ai/sdk@0.135.0/+esm";
 
 const DEFAULT_SYSTEM =
-  "너는 사용자의 개인 AI 비서 Jarvis야. 한국어로 친근하지만 간결하게 답해. " +
+  "너는 사용자의 개인 AI 비서 Jarvis야. 아이언맨의 자비스처럼 침착하고 정중하며 가끔 위트 있게, 한국어로 간결하게 답해. " +
   "모르는 건 모른다고 말하고, 필요하면 되물어봐. Latency-sensitive; begin your visible answer immediately.";
 
 // ---------- storage helpers ----------
@@ -330,7 +339,7 @@ const scrollDown = () => { els.scroller.scrollTop = els.scroller.scrollHeight; }
 
 // ---------- API ----------
 async function send(text) {
-  if (!settings.apiKey) { openSettings(); return; }
+  if (!settings.apiKey) { openSettings(); return null; }
 
   let chat = current();
   if (!chat) {
@@ -348,11 +357,12 @@ async function send(text) {
 
   const client = new Anthropic({ apiKey: settings.apiKey, dangerouslyAllowBrowser: true });
   let shown = "";
+  let result = null;
   try {
     const params = {
       model: settings.model,
       max_tokens: 64000,
-      system: settings.system || DEFAULT_SYSTEM,
+      system: (settings.system || DEFAULT_SYSTEM) + (voiceOn ? VOICE_NOTE : ""),
       messages: [...chat.messages],
     };
     // Server-side refusal fallback on the models that support the "default" mode.
@@ -379,6 +389,7 @@ async function send(text) {
     } else {
       // Store full content blocks (including thinking blocks) so later turns replay them unchanged.
       chat.messages.push({ role: "assistant", content: final.content });
+      result = textOf(final.content);
       if (final.stop_reason === "max_tokens") addBubble("assistant", "⚠️ 답변이 길이 제한에 걸려 잘렸어요.", "error");
     }
   } catch (err) {
@@ -396,6 +407,7 @@ async function send(text) {
     busy = false; els.send.disabled = false;
     els.input.focus();
   }
+  return result;
 }
 
 // ---------- settings ----------
@@ -431,6 +443,81 @@ $("settingsBtn").onclick = openSettings;
 $("menuBtn").onclick = () => els.sidebar.classList.toggle("open");
 els.model.value = settings.model;
 els.model.onchange = () => { settings.model = els.model.value; store.set("jarvis.settings", settings); };
+
+
+// ---------- voice conversation ----------
+const VOICE_NOTE = "\n\n[음성 대화 중] 답변은 소리 내어 읽힌다. 마크다운, 목록, 이모지 없이 자연스러운 말로 1~3문장만 짧게 답해.";
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const canSpeak = "speechSynthesis" in window;
+let voiceOn = false, rec = null;
+const micBtn = $("micBtn"), vStatus = $("voiceStatus");
+function setStatus(t) { vStatus.textContent = t; vStatus.hidden = !t; }
+function plain(t) {
+  return t.replace(/```[\s\S]*?```/g, " 코드는 화면에 표시했어요. ").replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    .replace(/[*_`#>]/g, "").replace(/^\s*[-•]\s+/gm, "").trim();
+}
+function speak(text) {
+  return new Promise((resolve) => {
+    if (!canSpeak) return resolve();
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(plain(text));
+    u.lang = "ko-KR";
+    const v = speechSynthesis.getVoices().find((x) => /^ko/i.test(x.lang));
+    if (v) u.voice = v;
+    u.rate = 1.05;
+    u.onend = u.onerror = () => resolve();
+    speechSynthesis.speak(u);
+  });
+}
+function stopVoice() {
+  voiceOn = false;
+  micBtn.classList.remove("on");
+  try { rec && rec.abort(); } catch {}
+  rec = null;
+  if (canSpeak) speechSynthesis.cancel();
+  setStatus("");
+}
+function listen() {
+  if (!voiceOn || busy) return;
+  rec = new SR();
+  rec.lang = "ko-KR"; rec.interimResults = true; rec.continuous = false;
+  let finalText = "";
+  rec.onstart = () => setStatus("듣고 있어요… 말씀하세요");
+  rec.onresult = (e) => {
+    let interim = "";
+    for (const r of e.results) { if (r.isFinal) finalText += r[0].transcript; else interim += r[0].transcript; }
+    els.input.value = finalText + interim; autosize();
+  };
+  rec.onerror = (e) => {
+    if (e.error === "not-allowed" || e.error === "service-not-allowed") {
+      stopVoice();
+      setStatus("마이크를 쓸 수 없어요. 브라우저의 마이크 권한을 허용했는지 확인해 주세요. 이 페이지가 마이크를 막은 환경에서 열렸을 수도 있어요.");
+    } else if (e.error === "network") {
+      stopVoice();
+      setStatus("음성 인식 서버에 연결하지 못했어요. 인터넷 연결을 확인해 주세요.");
+    }
+  };
+  rec.onend = async () => {
+    rec = null;
+    if (!voiceOn) return;
+    const t = finalText.trim();
+    if (!t) { setTimeout(listen, 300); return; }
+    els.input.value = ""; autosize();
+    setStatus("생각 중…");
+    const answer = await send(t);
+    if (!voiceOn) return;
+    if (answer) { setStatus("말하는 중… (마이크 버튼을 누르면 멈춰요)"); await speak(answer); }
+    if (voiceOn) listen();
+  };
+  try { rec.start(); } catch { setTimeout(listen, 500); }
+}
+micBtn.onclick = () => {
+  if (!SR) { setStatus("이 브라우저는 음성 인식을 지원하지 않아요. 데스크톱 Chrome이나 Safari에서 열어 주세요."); return; }
+  if (voiceOn) { stopVoice(); return; }
+  voiceOn = true; micBtn.classList.add("on");
+  if (canSpeak) speechSynthesis.getVoices();
+  listen();
+};
 
 renderAll();
 if (!settings.apiKey) openSettings();
