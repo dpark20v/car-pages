@@ -2,162 +2,141 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Jarvis</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap">
 <style>
+  body { padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
   :root {
-    --bg: #0d0d0d;
-    --panel: #161616;
-    --panel-2: #1f1f1f;
-    --border: #2e2e2e;
-    --text: #f2f2f2;
-    --muted: #9a9a9a;
-    --accent: #4da3ff;
-    --user: #1d3a5c;
+    color-scheme: dark;
+    --bg: #04090e;
+    --panel: #07131c;
+    --panel-2: #0d1c28;
+    --border: #16384c;
+    --text: #e6f6ff;
+    --muted: #7fa3b8;
+    --accent: #3fd0ff;
+    --accent-2: #2f7fc4;
+    --amber: #f2b705;
+    --user: rgba(47, 127, 196, 0.28);
     --danger: #ff6b6b;
+    --display: "Orbitron", "Segoe UI", -apple-system, sans-serif;
   }
   * { box-sizing: border-box; }
   html, body { height: 100%; }
   body {
     margin: 0;
-    background: var(--bg);
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(ellipse at 50% 30%, rgba(63, 208, 255, 0.11), transparent 62%),
+      linear-gradient(rgba(63, 208, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(63, 208, 255, 0.035) 1px, transparent 1px);
+    background-size: auto, 32px 32px, 32px 32px;
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
     display: flex;
   }
+  [hidden] { display: none !important; }
   button, input, textarea, select { font: inherit; color: inherit; }
   button { cursor: pointer; }
 
-  /* Sidebar */
   aside {
-    width: 260px;
-    flex-shrink: 0;
-    background: var(--panel);
+    width: 270px; flex-shrink: 0; background: rgba(5, 13, 20, 0.96);
     border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    padding: 14px;
-    gap: 12px;
+    display: flex; flex-direction: column; padding: 16px; gap: 12px;
   }
-  .brand { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.02em; }
-  .brand span { color: var(--accent); }
-  .btn {
-    background: var(--panel-2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 9px 12px;
-    text-align: left;
-  }
-  .btn:hover { background: #2a2a2a; }
-  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; text-align: center; font-weight: 600; }
+  .brand { font-family: var(--display); font-size: 1.05rem; font-weight: 700; letter-spacing: 0.22em; color: var(--accent); text-shadow: 0 0 12px rgba(63, 208, 255, 0.55); }
+  .btn { background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; text-align: left; }
+  .btn:hover { border-color: var(--accent); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #02131c; text-align: center; font-weight: 700; }
   .btn.primary:hover { filter: brightness(1.1); }
-  .section-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+  .section-label { font-family: var(--display); font-size: 0.66rem; color: var(--muted); letter-spacing: 0.18em; text-transform: uppercase; margin-top: 4px; }
   #chatList { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
-  .chat-item {
-    display: flex; align-items: center; gap: 6px;
-    padding: 8px 10px; border-radius: 8px; font-size: 0.9rem;
-    color: var(--muted); cursor: pointer;
-  }
-  .chat-item:hover { background: var(--panel-2); color: var(--text); }
-  .chat-item.active { background: var(--panel-2); color: var(--text); }
+  .chat-item { display: flex; align-items: center; gap: 6px; padding: 9px 10px; border-radius: 8px; font-size: 0.9rem; color: var(--muted); cursor: pointer; }
+  .chat-item:hover, .chat-item.active { background: var(--panel-2); color: var(--text); }
+  .chat-item.active { box-shadow: inset 0 0 0 1px var(--border); }
   .chat-item .title { flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
   .chat-item .del { background: none; border: none; color: var(--muted); padding: 0 4px; visibility: hidden; }
   .chat-item:hover .del { visibility: visible; }
   .chat-item .del:hover { color: var(--danger); }
-  .links a { display: block; color: var(--muted); text-decoration: none; font-size: 0.88rem; padding: 4px 2px; }
-  .links a:hover { color: var(--text); }
+  .links a { display: block; color: var(--muted); text-decoration: none; font-size: 0.88rem; padding: 5px 2px; }
+  .links a:hover { color: var(--accent); }
 
-  /* Main */
   main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-  header {
-    display: flex; align-items: center; gap: 10px;
-    padding: 10px 16px; border-bottom: 1px solid var(--border);
-  }
-  #menuBtn { display: none; background: none; border: none; font-size: 1.3rem; padding: 2px 6px; }
+  header { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--border); background: rgba(4, 9, 14, 0.7); }
+  #menuBtn { display: none; background: none; border: none; font-size: 1.4rem; padding: 2px 6px; color: var(--accent); }
+  #chatTitle { font-family: var(--display); font-size: 0.8rem; letter-spacing: 0.2em; font-weight: 500; color: var(--accent); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
   header .spacer { flex: 1; }
-  header select {
-    background: var(--panel-2); border: 1px solid var(--border);
-    border-radius: 8px; padding: 6px 8px;
-  }
-  #messages { flex: 1; overflow-y: auto; padding: 24px 16px; }
-  .inner { max-width: 780px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+  header select { background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 6px 8px; font-size: 0.85rem; }
+
+  #messages { flex: 1; overflow-y: auto; padding: 20px 16px; }
+  .inner { max-width: 780px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; min-height: 100%; }
   .msg { line-height: 1.6; overflow-wrap: anywhere; }
-  .msg.user {
-    align-self: flex-end; background: var(--user);
-    padding: 10px 14px; border-radius: 14px; max-width: 85%;
-    white-space: pre-wrap;
-  }
+  .msg.user { align-self: flex-end; background: var(--user); border: 1px solid rgba(63, 208, 255, 0.35); padding: 10px 14px; border-radius: 14px 14px 4px 14px; max-width: 85%; white-space: pre-wrap; }
   .msg.assistant { align-self: stretch; }
+  .msg.assistant:not(.error)::before { content: "J.A.R.V.I.S."; display: block; font-family: var(--display); font-size: 0.62rem; letter-spacing: 0.22em; color: var(--accent); margin-bottom: 4px; opacity: 0.9; }
   .msg.assistant p { margin: 0 0 0.7em; }
   .msg.assistant p:last-child { margin-bottom: 0; }
   .msg.error { color: var(--danger); font-size: 0.92rem; }
-  .msg pre {
-    background: #111; border: 1px solid var(--border); border-radius: 8px;
-    padding: 12px; overflow-x: auto; font-size: 0.88rem;
-  }
+  .msg.muted { color: var(--muted); }
+  .msg pre { background: #03080c; border: 1px solid var(--border); border-radius: 8px; padding: 12px; overflow-x: auto; font-size: 0.88rem; }
   .msg code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
-  .msg :not(pre) > code { background: #262626; padding: 1px 5px; border-radius: 4px; font-size: 0.9em; }
+  .msg :not(pre) > code { background: #0d1c28; padding: 1px 5px; border-radius: 4px; font-size: 0.9em; }
   .msg ul, .msg ol { margin: 0 0 0.7em; padding-left: 1.4em; }
   .msg h1, .msg h2, .msg h3 { margin: 0.8em 0 0.4em; line-height: 1.3; }
   .msg h1 { font-size: 1.3rem; } .msg h2 { font-size: 1.15rem; } .msg h3 { font-size: 1.05rem; }
   .cursor::after { content: "▍"; color: var(--accent); animation: blink 1s steps(1) infinite; }
   @keyframes blink { 50% { opacity: 0; } }
 
-  .empty { text-align: center; color: var(--muted); margin-top: 18vh; }
-  .empty h1 { color: var(--text); font-size: 2rem; margin-bottom: 0.3em; }
+  .empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; padding: 4vh 0; }
+  .hud { background: none; border: none; padding: 0; width: min(80vw, 380px); aspect-ratio: 1; filter: drop-shadow(0 0 22px rgba(63, 208, 255, 0.28)); -webkit-tap-highlight-color: transparent; }
+  .hud svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  .hud text { font-family: var(--display); }
+  .hint { color: var(--muted); font-size: 0.92rem; margin: 0; max-width: 28em; }
+  .g-ticks, .g-seg, .g-amber, .core { transform-origin: 200px 200px; }
+  .g-ticks { animation: spin 90s linear infinite; }
+  .g-seg { animation: spin 60s linear infinite reverse; }
+  .g-amber { animation: spin 24s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes breathe { 50% { transform: scale(1.035); opacity: 0.8; } }
+  body[data-v="listen"] .core { animation: breathe 1.3s ease-in-out infinite; }
+  body[data-v="listen"] .hud { filter: drop-shadow(0 0 34px rgba(63, 208, 255, 0.6)); }
+  body[data-v="think"] .g-amber { animation-duration: 1.6s; }
+  body[data-v="speak"] .g-seg { animation-duration: 8s; }
+  body[data-v="speak"] .core { animation: breathe 0.7s ease-in-out infinite; }
+  body[data-v="speak"] .hud { filter: drop-shadow(0 0 34px rgba(63, 208, 255, 0.6)); }
 
-  #composer { padding: 12px 16px 18px; }
-  #composer form {
-    max-width: 780px; margin: 0 auto; display: flex; gap: 8px; align-items: flex-end;
-    background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 8px;
-  }
-  #input {
-    flex: 1; resize: none; border: none; outline: none; background: transparent;
-    padding: 8px; max-height: 200px; line-height: 1.5;
-  }
-  #sendBtn {
-    background: var(--accent); border: none; border-radius: 10px; color: #fff;
-    padding: 8px 16px; font-weight: 600;
-  }
-  #sendBtn:disabled { opacity: 0.5; cursor: default; }
+  #composer { padding: 10px 16px 18px; }
+  #composer form { max-width: 780px; margin: 0 auto; display: flex; gap: 8px; align-items: flex-end; background: rgba(7, 19, 28, 0.9); border: 1px solid var(--border); border-radius: 16px; padding: 8px; box-shadow: 0 0 26px rgba(63, 208, 255, 0.07); }
+  #composer form:focus-within { border-color: var(--accent); }
+  #input { flex: 1; resize: none; border: none; outline: none; background: transparent; padding: 8px; max-height: 200px; line-height: 1.5; font-size: 16px; }
+  #sendBtn { background: var(--accent); border: none; border-radius: 12px; color: #02131c; padding: 10px 16px; font-weight: 700; }
+  #sendBtn:disabled { opacity: 0.45; cursor: default; }
+  .mic { width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; background: transparent; border: 1.5px solid var(--accent); font-size: 1.15rem; padding: 0; }
+  .mic.on { background: var(--accent); animation: pulse 1.4s ease-in-out infinite; }
+  @keyframes pulse { 50% { box-shadow: 0 0 0 7px rgba(63, 208, 255, 0.22); } }
+  .vstatus { max-width: 780px; margin: 0 auto 8px; color: var(--accent); font-size: 0.9rem; font-family: var(--display); letter-spacing: 0.06em; }
 
-  /* Settings dialog */
-  dialog {
-    background: var(--panel); color: var(--text); border: 1px solid var(--border);
-    border-radius: 14px; padding: 20px; width: min(520px, calc(100vw - 32px));
-  }
-  dialog::backdrop { background: rgba(0,0,0,0.6); }
-  dialog h2 { margin-top: 0; }
+  dialog { background: var(--panel); color: var(--text); border: 1px solid var(--border); border-radius: 14px; padding: 20px; width: min(520px, calc(100vw - 32px)); }
+  dialog::backdrop { background: rgba(0, 0, 0, 0.7); }
+  dialog h2 { margin-top: 0; font-family: var(--display); font-size: 1rem; letter-spacing: 0.15em; color: var(--accent); }
   dialog label { display: block; font-size: 0.85rem; color: var(--muted); margin: 14px 0 6px; }
-  dialog input, dialog textarea {
-    width: 100%; background: var(--panel-2); border: 1px solid var(--border);
-    border-radius: 8px; padding: 8px 10px;
-  }
-  dialog select { width: 100%; background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; }
+  dialog input, dialog textarea, dialog select { width: 100%; background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 16px; }
   dialog textarea { min-height: 110px; resize: vertical; }
   dialog .hint { font-size: 0.78rem; color: var(--muted); margin-top: 6px; line-height: 1.5; }
   dialog .row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; }
 
   @media (max-width: 760px) {
-    aside {
-      position: fixed; inset: 0 auto 0 0; z-index: 10;
-      transform: translateX(-100%); transition: transform 0.2s;
-    }
-    aside.open { transform: none; box-shadow: 0 0 40px rgba(0,0,0,0.6); }
+    aside { position: fixed; inset: 0 auto 0 0; z-index: 10; transform: translateX(-100%); transition: transform 0.2s; }
+    aside.open { transform: none; box-shadow: 0 0 40px rgba(0, 0, 0, 0.8); }
     #menuBtn { display: block; }
   }
-
-  [hidden] { display: none !important; }
-  .mic { background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; font-size: 1.1rem; }
-  .mic.on { background: var(--danger); border-color: var(--danger); animation: pulse 1.4s ease-in-out infinite; }
-  @keyframes pulse { 50% { box-shadow: 0 0 0 6px rgba(255,107,107,0.25); } }
-  .vstatus { max-width: 780px; margin: 0 auto 8px; color: var(--accent); font-size: 0.9rem; }
-  @media (prefers-reduced-motion: reduce) { .mic.on { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .g-ticks, .g-seg, .g-amber, .core, .mic.on { animation: none !important; } }
 </style>
 </head>
 <body>
   <aside id="sidebar">
-    <div class="brand">J<span>A</span>RVIS</div>
+    <div class="brand">J.A.R.V.I.S.</div>
     <button class="btn primary" id="newChatBtn">+ 새 대화</button>
     <div class="section-label">대화 기록</div>
     <div id="chatList"></div>
@@ -172,7 +151,7 @@
   <main>
     <header>
       <button id="menuBtn" aria-label="메뉴">☰</button>
-      <strong id="chatTitle">Jarvis</strong>
+      <strong id="chatTitle">J.A.R.V.I.S.</strong>
       <div class="spacer"></div>
       <select id="modelSelect" aria-label="모델">
         <option value="claude-opus-5-5">Claude Opus 5.5</option>
@@ -329,13 +308,36 @@ function addBubble(role, text, extraClass = "") {
   return div;
 }
 
+
+function hudSvg() {
+  let ticks = "";
+  for (let i = 0; i < 90; i++) {
+    const a = (i / 90) * Math.PI * 2, long = i % 5 === 0, r1 = long ? 166 : 170, r2 = 178;
+    ticks += `<line x1="${(200 + r1 * Math.cos(a)).toFixed(1)}" y1="${(200 + r1 * Math.sin(a)).toFixed(1)}" x2="${(200 + r2 * Math.cos(a)).toFixed(1)}" y2="${(200 + r2 * Math.sin(a)).toFixed(1)}" stroke="#3fd0ff" stroke-width="${long ? 2 : 1}" opacity="${long ? 0.95 : 0.55}"/>`;
+  }
+  return `<svg viewBox="0 0 400 400" aria-hidden="true">
+    <defs><filter id="glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <circle cx="200" cy="200" r="192" fill="none" stroke="#3fd0ff" stroke-width="2.5" filter="url(#glow)"/>
+    <g class="g-ticks">${ticks}</g>
+    <circle cx="200" cy="200" r="160" fill="none" stroke="#3fd0ff" stroke-width="1" opacity="0.5"/>
+    <circle class="g-seg" cx="200" cy="200" r="138" fill="none" stroke="#2f7fc4" stroke-width="26" stroke-dasharray="40 3.2" opacity="0.62"/>
+    <circle cx="200" cy="200" r="123" fill="none" stroke="#3fd0ff" stroke-width="1.5" opacity="0.8"/>
+    <g class="g-amber"><circle cx="200" cy="200" r="112" fill="none" stroke="#f2b705" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="150 560" filter="url(#glow)"/>
+      <circle cx="200" cy="88" r="3" fill="#f2b705"/><circle cx="232" cy="92" r="2.5" fill="#f2b705"/><circle cx="262" cy="104" r="2.5" fill="#f2b705"/></g>
+    <g class="core"><circle cx="200" cy="200" r="96" fill="#04141d" stroke="#3fd0ff" stroke-width="2" filter="url(#glow)"/>
+      <circle cx="200" cy="200" r="86" fill="none" stroke="#3fd0ff" stroke-width="0.8" stroke-dasharray="2 5" opacity="0.7"/>
+      <text x="200" y="207" text-anchor="middle" font-size="19" font-weight="700" letter-spacing="3" fill="#e6f6ff" filter="url(#glow)">J.A.R.V.I.S.</text></g>
+  </svg>`;
+}
+function heroHtml(hint) {
+  return `<div class="empty"><button class="hud" id="hudBtn" type="button" aria-label="음성 대화 시작">${hudSvg()}</button><p class="hint">${hint}</p></div>`;
+}
 function renderMessages() {
   els.inner.innerHTML = "";
   const chat = current();
-  els.title.textContent = chat ? chat.title : "Jarvis";
+  els.title.textContent = chat ? chat.title : "J.A.R.V.I.S.";
   if (!chat || chat.messages.length === 0) {
-    els.inner.innerHTML = `<div class="empty"><h1>무엇을 도와드릴까요?</h1>
-      <p>${settings.apiKey ? "아래에 메시지를 입력하세요." : "먼저 ⚙️ 설정에서 Anthropic API 키를 입력해 주세요."}</p></div>`;
+    els.inner.innerHTML = heroHtml(settings.apiKey ? "링을 누르면 음성 대화가 시작돼요. 아래에 글로 입력해도 돼요." : "먼저 ⚙️ 설정에서 Anthropic API 키를 입력해 주세요.");
     return;
   }
   for (const m of chat.messages) addBubble(m.role, textOf(m.content));
@@ -473,7 +475,10 @@ const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 const canSpeak = "speechSynthesis" in window;
 let voiceOn = false, rec = null;
 const micBtn = $("micBtn"), vStatus = $("voiceStatus");
-function setStatus(t) { vStatus.textContent = t; vStatus.hidden = !t; }
+function setStatus(t) {
+  vStatus.textContent = t; vStatus.hidden = !t;
+  document.body.dataset.v = t.startsWith("듣고") ? "listen" : t.startsWith("생각") ? "think" : t.startsWith("말하는") ? "speak" : "";
+}
 function plain(t) {
   return t.replace(/```[\s\S]*?```/g, " 코드는 화면에 표시했어요. ").replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
     .replace(/[*_`#>]/g, "").replace(/^\s*[-•]\s+/gm, "").trim();
@@ -536,6 +541,7 @@ function listen() {
   };
   try { rec.start(); } catch { setTimeout(listen, 500); }
 }
+els.inner.addEventListener("click", (e) => { if (e.target.closest("#hudBtn")) micBtn.click(); });
 micBtn.onclick = () => {
   if (!SR) { setStatus("이 브라우저는 음성 인식을 지원하지 않아요. 데스크톱 Chrome이나 Safari에서 열어 주세요."); return; }
   if (voiceOn) { stopVoice(); return; }
